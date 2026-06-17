@@ -380,348 +380,362 @@ class _InAppWebViewScreenState extends State<InAppWebViewScreen> {
     final tcontext = Translations.of(context);
 
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: const SizedBox(
-                        width: 50,
-                        height: 30,
-                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
-                      ),
-                    ),
-                    SizedBox(
-                      width:
-                          windowSize.width -
-                          50 * (widget.showGoBackGoForward ? 4 : 2) -
-                          50 * (widget.showOpenExternal ? 1 : 0),
-                      child: Text(
-                        widget.title,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontWeight: ThemeConfig.kFontWeightTitle,
-                          fontSize: ThemeConfig.kFontSizeTitle,
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: ThemeDefine.kHomeGradient,
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: const SizedBox(
+                          width: 50,
+                          height: 30,
+                          child: Icon(Icons.arrow_back_ios_outlined, size: 26),
                         ),
                       ),
-                    ),
-                    Row(
-                      children: [
-                        if (widget.showGoBackGoForward) ...[
-                          InkWell(
-                            onTap: () async {
-                              _webViewController?.goBack();
-                            },
-                            child: const SizedBox(
-                              width: 50,
-                              height: 30,
-                              child: Icon(Icons.arrow_back, size: 26),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () async {
-                              _webViewController?.goForward();
-                            },
-                            child: const SizedBox(
-                              width: 50,
-                              height: 30,
-                              child: Icon(Icons.arrow_forward, size: 26),
-                            ),
-                          ),
-                        ],
-                        InkWell(
-                          onTap: () async {
-                            _webViewController?.reload();
-                          },
-                          child: const SizedBox(
-                            width: 50,
-                            height: 30,
-                            child: Icon(Icons.refresh, size: 26),
+                      SizedBox(
+                        width:
+                            windowSize.width -
+                            50 * (widget.showGoBackGoForward ? 4 : 2) -
+                            50 * (widget.showOpenExternal ? 1 : 0),
+                        child: Text(
+                          widget.title,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: ThemeConfig.kFontWeightTitle,
+                            fontSize: ThemeConfig.kFontSizeTitle,
                           ),
                         ),
-                        if (widget.showOpenExternal) ...[
+                      ),
+                      Row(
+                        children: [
+                          if (widget.showGoBackGoForward) ...[
+                            InkWell(
+                              onTap: () async {
+                                _webViewController?.goBack();
+                              },
+                              child: const SizedBox(
+                                width: 50,
+                                height: 30,
+                                child: Icon(Icons.arrow_back, size: 26),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                _webViewController?.goForward();
+                              },
+                              child: const SizedBox(
+                                width: 50,
+                                height: 30,
+                                child: Icon(Icons.arrow_forward, size: 26),
+                              ),
+                            ),
+                          ],
                           InkWell(
                             onTap: () async {
-                              UrlLauncherUtils.loadUrl(
-                                _url.isNotEmpty ? _url : widget.url,
-                              );
+                              _webViewController?.reload();
                             },
                             child: const SizedBox(
                               width: 50,
                               height: 30,
-                              child: Icon(Icons.open_in_new_outlined, size: 26),
+                              child: Icon(Icons.refresh, size: 26),
                             ),
                           ),
+                          if (widget.showOpenExternal) ...[
+                            InkWell(
+                              onTap: () async {
+                                UrlLauncherUtils.loadUrl(
+                                  _url.isNotEmpty ? _url : widget.url,
+                                );
+                              },
+                              child: const SizedBox(
+                                width: 50,
+                                height: 30,
+                                child: Icon(Icons.open_in_new_outlined, size: 26),
+                              ),
+                            ),
+                          ],
                         ],
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              InAppWebViewScreen.isInited()
-                  ? Expanded(
-                      child:
-                          InAppWebViewScreen.isAvailable() ||
-                              !Platform.isWindows
-                          ? Stack(
-                              children: [
-                                FutureBuilder(
-                                  future:
-                                      InAppWebViewScreen.makeSureEnvironmentCreated(),
-                                  builder:
-                                      (
-                                        BuildContext context,
-                                        AsyncSnapshot<bool> snapshot,
-                                      ) {
-                                        return snapshot.hasData &&
-                                                snapshot.data!
-                                            ? InAppWebView(
-                                                key: webViewKey,
-                                                webViewEnvironment:
-                                                    InAppWebViewScreen
-                                                        ._webViewEnvironment,
-                                                initialUrlRequest: URLRequest(
-                                                  url: WebUri(widget.url),
-                                                  headers: widget.headers,
-                                                ),
-                                                // initialUrlRequest:
-                                                // URLRequest(url: WebUri(Uri.base.toString().replaceFirst("/#/", "/") + 'page.html')),
-                                                // initialFile: "assets/index.html",
-                                                initialUserScripts:
-                                                    UnmodifiableListView(
-                                                      _scripts,
-                                                    ),
-                                                initialSettings: _settings,
-                                                //contextMenu: _contextMenu,
-                                                pullToRefreshController:
-                                                    _pullToRefreshController,
-                                                onWebViewCreated:
-                                                    (controller) async {
-                                                      _webViewController =
-                                                          controller;
-                                                      setJavaScriptHandler();
-                                                    },
-                                                onLoadStart:
-                                                    (controller, url) async {
-                                                      /* controller
-                                                    .injectJavascriptFileFromUrl(
-                                                        urlFile: WebUri(
-                                                            "https://github.githubassets.com/assets/global-copilot-menu-11ae0289e00d.js"));*/
-                                                      _url = url.toString();
-                                                    },
-                                                onPermissionRequest:
-                                                    (
-                                                      controller,
-                                                      request,
-                                                    ) async {
-                                                      //https://webcamtests.com/
-                                                      final Set<
-                                                        PermissionResourceType
-                                                      >
-                                                      values = {
-                                                        PermissionResourceType
-                                                            .CAMERA,
-                                                        PermissionResourceType
-                                                            .CAMERA_AND_MICROPHONE,
-                                                        PermissionResourceType
-                                                            .GEOLOCATION,
-                                                        PermissionResourceType
-                                                            .MICROPHONE,
-                                                      };
-                                                      Set<
-                                                        PermissionResourceType
-                                                      >
-                                                      intersection = values
-                                                          .intersection(
-                                                            request.resources
-                                                                .toSet(),
+                const SizedBox(height: 10),
+                InAppWebViewScreen.isInited()
+                    ? Expanded(
+                        child:
+                            InAppWebViewScreen.isAvailable() ||
+                                !Platform.isWindows
+                            ? Stack(
+                                children: [
+                                  FutureBuilder(
+                                    future:
+                                        InAppWebViewScreen.makeSureEnvironmentCreated(),
+                                    builder:
+                                        (
+                                          BuildContext context,
+                                          AsyncSnapshot<bool> snapshot,
+                                        ) {
+                                          return snapshot.hasData &&
+                                                  snapshot.data!
+                                              ? InAppWebView(
+                                                  key: webViewKey,
+                                                  webViewEnvironment:
+                                                      InAppWebViewScreen
+                                                          ._webViewEnvironment,
+                                                  initialUrlRequest: URLRequest(
+                                                    url: WebUri(widget.url),
+                                                    headers: widget.headers,
+                                                  ),
+                                                  // initialUrlRequest:
+                                                  // URLRequest(url: WebUri(Uri.base.toString().replaceFirst("/#/", "/") + 'page.html')),
+                                                  // initialFile: "assets/index.html",
+                                                  initialUserScripts:
+                                                      UnmodifiableListView(
+                                                        _scripts,
+                                                      ),
+                                                  initialSettings: _settings,
+                                                  //contextMenu: _contextMenu,
+                                                  pullToRefreshController:
+                                                      _pullToRefreshController,
+                                                  onWebViewCreated:
+                                                      (controller) async {
+                                                        _webViewController =
+                                                            controller;
+                                                        setJavaScriptHandler();
+                                                      },
+                                                  onLoadStart:
+                                                      (controller, url) async {
+                                                        /* controller
+                                                      .injectJavascriptFileFromUrl(
+                                                          urlFile: WebUri(
+                                                              "https://github.githubassets.com/assets/global-copilot-menu-11ae0289e00d.js"));*/
+                                                        _url = url.toString();
+                                                      },
+                                                  onPermissionRequest:
+                                                      (
+                                                        controller,
+                                                        request,
+                                                      ) async {
+                                                        //https://webcamtests.com/
+                                                        final Set<
+                                                          PermissionResourceType
+                                                        >
+                                                        values = {
+                                                          PermissionResourceType
+                                                              .CAMERA,
+                                                          PermissionResourceType
+                                                              .CAMERA_AND_MICROPHONE,
+                                                          PermissionResourceType
+                                                              .GEOLOCATION,
+                                                          PermissionResourceType
+                                                              .MICROPHONE,
+                                                        };
+                                                        Set<
+                                                          PermissionResourceType
+                                                        >
+                                                        intersection = values
+                                                            .intersection(
+                                                              request.resources
+                                                                  .toSet(),
+                                                            );
+                                                        if (intersection
+                                                            .isNotEmpty) {
+                                                          return PermissionResponse(
+                                                            resources:
+                                                                request.resources,
+                                                            action:
+                                                                PermissionResponseAction
+                                                                    .DENY,
                                                           );
-                                                      if (intersection
-                                                          .isNotEmpty) {
+                                                        }
                                                         return PermissionResponse(
                                                           resources:
                                                               request.resources,
                                                           action:
                                                               PermissionResponseAction
-                                                                  .DENY,
+                                                                  .GRANT,
                                                         );
-                                                      }
-                                                      return PermissionResponse(
-                                                        resources:
-                                                            request.resources,
-                                                        action:
-                                                            PermissionResponseAction
-                                                                .GRANT,
-                                                      );
-                                                    },
-                                                shouldOverrideUrlLoading:
-                                                    (
-                                                      controller,
-                                                      navigationAction,
-                                                    ) async {
-                                                      var uri = navigationAction
-                                                          .request
-                                                          .url!;
+                                                      },
+                                                  shouldOverrideUrlLoading:
+                                                      (
+                                                        controller,
+                                                        navigationAction,
+                                                      ) async {
+                                                        var uri = navigationAction
+                                                            .request
+                                                            .url!;
 
-                                                      if (![
-                                                        "http",
-                                                        "https",
-                                                        "file",
-                                                        "chrome",
-                                                        "data",
-                                                        "javascript",
-                                                        "about",
-                                                      ].contains(uri.scheme)) {
-                                                        if (await canLaunchUrl(
-                                                          uri,
-                                                        )) {
-                                                          await launchUrl(uri);
+                                                        if (![
+                                                          "http",
+                                                          "https",
+                                                          "file",
+                                                          "chrome",
+                                                          "data",
+                                                          "javascript",
+                                                          "about",
+                                                        ].contains(uri.scheme)) {
+                                                          if (await canLaunchUrl(
+                                                            uri,
+                                                          )) {
+                                                            await launchUrl(uri);
 
-                                                          return NavigationActionPolicy
-                                                              .CANCEL;
+                                                            return NavigationActionPolicy
+                                                                .CANCEL;
+                                                          }
                                                         }
-                                                      }
 
-                                                      return NavigationActionPolicy
-                                                          .ALLOW;
-                                                    },
+                                                        return NavigationActionPolicy
+                                                            .ALLOW;
+                                                      },
 
-                                                onLoadStop:
-                                                    (controller, url) async {
-                                                      _pullToRefreshController
-                                                          ?.endRefreshing();
-                                                      _url = url.toString();
-                                                      /*if (url != null) {
-                                                    final cookies =
-                                                        await CookieManager.instance(
-                                                          webViewEnvironment:
-                                                              InAppWebViewScreen
-                                                                  ._webViewEnvironment,
-                                                        ).getCookies(
-                                                          url: url,
-                                                          webViewController:
-                                                              controller,
-                                                        );
-                                                    print(cookies);
-                                                  }*/
-                                                    },
-                                                onReceivedError:
-                                                    (
-                                                      controller,
-                                                      request,
-                                                      error,
-                                                    ) {
-                                                      _pullToRefreshController
-                                                          ?.endRefreshing();
-                                                    },
-                                                onProgressChanged:
-                                                    (controller, progress) {
-                                                      if (progress == 100) {
+                                                  onLoadStop:
+                                                      (controller, url) async {
                                                         _pullToRefreshController
                                                             ?.endRefreshing();
-                                                      }
-                                                      setState(() {
-                                                        _progress =
-                                                            progress / 100;
-                                                      });
-                                                    },
-                                                onUpdateVisitedHistory:
-                                                    (
-                                                      controller,
-                                                      url,
-                                                      isReload,
-                                                    ) {
-                                                      _url = url.toString();
-                                                    },
-                                                onConsoleMessage:
-                                                    (
-                                                      controller,
-                                                      consoleMessage,
-                                                    ) {
-                                                      if (kDebugMode) {
-                                                        print(consoleMessage);
-                                                      }
-                                                    },
-                                              )
-                                            : const SizedBox.shrink();
-                                      },
-                                ),
-                                _progress < 1.0
-                                    ? LinearProgressIndicator(value: _progress)
-                                    : Container(),
-                              ],
-                            )
-                          : Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.only(
-                                    top: 20,
-                                    left: 20,
-                                    right: 20,
+                                                        _url = url.toString();
+                                                        /*if (url != null) {
+                                                      final cookies =
+                                                          await CookieManager.instance(
+                                                            webViewEnvironment:
+                                                                InAppWebViewScreen
+                                                                    ._webViewEnvironment,
+                                                          ).getCookies(
+                                                            url: url,
+                                                            webViewController:
+                                                                controller,
+                                                          );
+                                                      print(cookies);
+                                                    }*/
+                                                      },
+                                                  onReceivedError:
+                                                      (
+                                                        controller,
+                                                        request,
+                                                        error,
+                                                      ) {
+                                                        _pullToRefreshController
+                                                            ?.endRefreshing();
+                                                      },
+                                                  onProgressChanged:
+                                                      (controller, progress) {
+                                                        if (progress == 100) {
+                                                          _pullToRefreshController
+                                                              ?.endRefreshing();
+                                                        }
+                                                        setState(() {
+                                                          _progress =
+                                                              progress / 100;
+                                                        });
+                                                      },
+                                                  onUpdateVisitedHistory:
+                                                      (
+                                                        controller,
+                                                        url,
+                                                        isReload,
+                                                      ) {
+                                                        _url = url.toString();
+                                                      },
+                                                  onConsoleMessage:
+                                                      (
+                                                        controller,
+                                                        consoleMessage,
+                                                      ) {
+                                                        if (kDebugMode) {
+                                                          print(consoleMessage);
+                                                        }
+                                                      },
+                                                )
+                                              : const SizedBox.shrink();
+                                        },
                                   ),
-                                  alignment: Alignment.center,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        tcontext.edgeRuntimeNotInstalled,
-                                        style: const TextStyle(
-                                          fontSize:
-                                              ThemeConfig.kFontSizeListSubItem,
-                                          color: Colors.red,
+                                  _progress < 1.0
+                                      ? LinearProgressIndicator(value: _progress)
+                                      : Container(),
+                                ],
+                              )
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(
+                                      top: 20,
+                                      left: 20,
+                                      right: 20,
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          tcontext.edgeRuntimeNotInstalled,
+                                          style: const TextStyle(
+                                            fontSize:
+                                                ThemeConfig.kFontSizeListSubItem,
+                                            color: Colors.red,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 30),
-                                      SizedBox(
-                                        height: 45.0,
-                                        child: ElevatedButton(
-                                          child: Text(tcontext.meta.download),
-                                          onPressed: () async {
-                                            String url =
-                                                "https://developer.microsoft.com/en-us/microsoft-edge/webview2?cs=530857304&form=MA13LH#download";
-                                            if (SettingManager.getConfig()
-                                                    .languageTag
-                                                    .toLowerCase() ==
-                                                "zh-cn") {
-                                              url =
-                                                  "https://developer.microsoft.com/zh-cn/microsoft-edge/webview2?cs=530857304&form=MA13LH#download";
-                                            }
-                                            await UrlLauncherUtils.loadUrl(url);
-                                          },
+                                        const SizedBox(height: 30),
+                                        SizedBox(
+                                          height: 45.0,
+                                          child: ElevatedButton(
+                                            child: Text(tcontext.meta.download),
+                                            onPressed: () async {
+                                              String url =
+                                                  "https://developer.microsoft.com/en-us/microsoft-edge/webview2?cs=530857304&form=MA13LH#download";
+                                              if (SettingManager.getConfig()
+                                                      .languageTag
+                                                      .toLowerCase() ==
+                                                  "zh-cn") {
+                                                url =
+                                                    "https://developer.microsoft.com/zh-cn/microsoft-edge/webview2?cs=530857304&form=MA13LH#download";
+                                              }
+                                              await UrlLauncherUtils.loadUrl(url);
+                                            },
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                    )
-                  : FutureBuilder(
-                      future: InAppWebViewScreen.getNotInitedDesc(),
-                      builder:
-                          (
-                            BuildContext context,
-                            AsyncSnapshot<String> snapshot,
-                          ) {
-                            return Text(
-                              snapshot.hasData && snapshot.data != null
-                                  ? snapshot.data!
-                                  : "",
-                            );
-                          },
-                    ),
-            ],
+                                ],
+                              ),
+                      )
+                    : FutureBuilder(
+                        future: InAppWebViewScreen.getNotInitedDesc(),
+                        builder:
+                            (
+                              BuildContext context,
+                              AsyncSnapshot<String> snapshot,
+                            ) {
+                              return Text(
+                                snapshot.hasData && snapshot.data != null
+                                    ? snapshot.data!
+                                    : "",
+                              );
+                            },
+                      ),
+              ],
+            ),
           ),
         ),
       ),

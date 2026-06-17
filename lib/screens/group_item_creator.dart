@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:karing/screens/group_item_options.dart';
 import 'package:karing/screens/group_item_widgets.dart';
 import 'package:karing/screens/theme_config.dart';
+import 'package:karing/screens/theme_define.dart';
 
 class GroupItem {
   GroupItem({
@@ -27,7 +28,16 @@ class GroupItemCreator {
     int index = 0;
     for (var group in groups) {
       widgets.add(
-        Card(
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 6),
+          decoration: BoxDecoration(
+            color: ThemeDefine.kColorSurface.withOpacity(0.7),
+            borderRadius: ThemeDefine.kBorderRadius,
+            border: Border.all(
+              color: ThemeDefine.kColorOutline.withOpacity(0.12),
+              width: 1,
+            ),
+          ),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: giCreator.createGroup(
@@ -56,6 +66,7 @@ class GroupItemCreator {
         style: const TextStyle(
           fontSize: ThemeConfig.kFontSizeListItem,
           fontWeight: ThemeConfig.kFontWeightListItem,
+          color: ThemeDefine.kColorOnSurface,
         ),
       ),
     );

@@ -5,6 +5,7 @@ import 'package:karing/app/modules/biz.dart';
 import 'package:karing/app/modules/remote_config_manager.dart';
 import 'package:karing/i18n/strings.g.dart';
 import 'package:karing/screens/theme_config.dart';
+import 'package:karing/screens/theme_define.dart';
 import 'package:karing/screens/webview_helper.dart';
 import 'package:karing/screens/widgets/framework.dart';
 
@@ -94,8 +95,12 @@ class _LaunchFailedScreenState extends LasyRenderingState<LaunchFailedScreen> {
       error = "Exception";
     }
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: Column(
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar(backgroundColor: Colors.transparent, elevation: 0)),
+      body: Container(
+        decoration: const BoxDecoration(gradient: ThemeDefine.kHomeGradient),
+        child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
@@ -150,7 +155,7 @@ class _LaunchFailedScreenState extends LasyRenderingState<LaunchFailedScreen> {
                   error,
                   style: const TextStyle(
                     fontSize: ThemeConfig.kFontSizeListSubItem,
-                    color: Colors.red,
+                    color: ThemeDefine.kColorPrimary,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -158,13 +163,14 @@ class _LaunchFailedScreenState extends LasyRenderingState<LaunchFailedScreen> {
                   widget.startFailedReasonDesc ?? "",
                   style: const TextStyle(
                     fontSize: ThemeConfig.kFontSizeListSubItem,
-                    color: Colors.red,
+                    color: ThemeDefine.kColorPrimary,
                   ),
                 ),
               ],
             ),
           ),
         ],
+      ),
       ),
     );
   }

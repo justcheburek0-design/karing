@@ -51,8 +51,18 @@ class _SpeedTestSettingsScreenState
     final tcontext = Translations.of(context);
     Size windowSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(gradient: ThemeDefine.kHomeGradient),
+        child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
           child: Column(
@@ -100,6 +110,7 @@ class _SpeedTestSettingsScreenState
             ],
           ),
         ),
+      ),
       ),
     );
   }

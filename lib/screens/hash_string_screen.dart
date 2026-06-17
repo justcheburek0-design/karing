@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:karing/app/utils/platform_utils.dart';
 import 'package:karing/screens/theme_config.dart';
+import 'package:karing/screens/theme_define.dart';
 import 'package:karing/screens/widgets/framework.dart';
 import 'package:karing/screens/widgets/text_field.dart';
 
@@ -39,9 +40,16 @@ class _SentryHashStringScreenState
   @override
   Widget build(BuildContext context) {
     Size windowSize = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
+    return Container(
+      decoration: BoxDecoration(gradient: ThemeDefine.kHomeGradient),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        extendBodyBehindAppBar: true,
+        appBar: PreferredSize(
+          preferredSize: Size.zero,
+          child: AppBar(backgroundColor: Colors.transparent, elevation: 0),
+        ),
+        body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
           child: Column(
@@ -66,6 +74,7 @@ class _SentryHashStringScreenState
                       style: const TextStyle(
                         fontWeight: ThemeConfig.kFontWeightTitle,
                         fontSize: ThemeConfig.kFontSizeTitle,
+                        color: ThemeDefine.kColorOnSurface,
                       ),
                     ),
                   ),
@@ -108,6 +117,7 @@ class _SentryHashStringScreenState
             ],
           ),
         ),
+      ),
       ),
     );
   }

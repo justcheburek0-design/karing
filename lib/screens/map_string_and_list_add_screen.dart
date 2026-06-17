@@ -179,7 +179,7 @@ class _MapStringAndListAddScreenState
                               child: const Icon(
                                 Icons.remove_circle_outlined,
                                 size: 26,
-                                color: Colors.red,
+                                color: ThemeDefine.kColorPrimary,
                               ),
                             ),
                           ),

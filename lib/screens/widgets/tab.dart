@@ -7,19 +7,20 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/rendering.dart';
+import 'package:karing/screens/theme_define.dart';
 
 const EdgeInsetsGeometry _kHorizontalItemPadding = EdgeInsets.symmetric(
   vertical: 2,
   horizontal: 3,
 );
 
-const Radius _kCornerRadius = Radius.circular(9);
+const Radius _kCornerRadius = Radius.circular(16);
 
-const Radius _kThumbRadius = Radius.circular(8);
+const Radius _kThumbRadius = Radius.circular(14);
 
 const EdgeInsets _kThumbInsets = EdgeInsets.symmetric(horizontal: 1);
 
-const double _kMinSegmentedControlHeight = 28.0;
+const double _kMinSegmentedControlHeight = 44.0;
 
 const EdgeInsets _kSeparatorInset = EdgeInsets.symmetric(vertical: 5);
 
@@ -40,6 +41,8 @@ const FontWeight _kFontWeight = FontWeight.w500;
 const FontWeight _kHighlightedFontWeight = FontWeight.w600;
 
 const Color _kDisabledContentColor = Color.fromARGB(115, 122, 122, 122);
+const Color _kDefaultThumbColor = ThemeDefine.kColorPrimary;
+const Color _kDefaultBackgroundColor = Color(0x33A8E63D);
 
 final SpringSimulation _kThumbSpringAnimationSimulation = SpringSimulation(
   const SpringDescription(mass: 1, stiffness: 503.551, damping: 44.8799),
@@ -61,9 +64,9 @@ class CommonTabBar<T extends Object> extends StatefulWidget {
     required this.onValueChanged,
     this.disabledChildren = const <Never>{},
     this.groupValue,
-    required this.thumbColor,
+    this.thumbColor = ThemeDefine.kColorPrimary,
     this.padding = _kHorizontalItemPadding,
-    this.backgroundColor,
+    this.backgroundColor = const Color(0x33A8E63D),
     this.proportionalWidth = false,
     this.focusNode,
   }) : assert(children.length >= 2),
@@ -379,6 +382,10 @@ class _CommonTabBarState<T extends Object> extends State<CommonTabBar<T>>
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(_kCornerRadius),
           color: widget.backgroundColor,
+          border: Border.all(
+            color: ThemeDefine.kColorPrimary.withOpacity(0.2),
+            width: 1,
+          ),
         ),
         child: AnimatedBuilder(
           animation: thumbScaleAnimation,

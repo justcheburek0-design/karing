@@ -63,25 +63,47 @@ class MyProfilesReorderScreenState
     final tcontext = Translations.of(context);
     Size windowSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: const SizedBox(
-                        width: 50,
-                        height: 30,
-                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: ThemeDefine.kHomeGradient,
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: ThemeDefine.kColorSurfaceVariant
+                                .withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.arrow_back_ios_outlined,
+                            size: 22,
+                            color: ThemeDefine.kColorOnSurface,
+                          ),
+                        ),
                       ),
-                    ),
                     SizedBox(
                       width: windowSize.width - 50 * 2,
                       child: Text(
@@ -91,6 +113,7 @@ class MyProfilesReorderScreenState
                         style: const TextStyle(
                           fontWeight: ThemeConfig.kFontWeightTitle,
                           fontSize: ThemeConfig.kFontSizeTitle,
+                          color: ThemeDefine.kColorOnSurface,
                         ),
                       ),
                     ),
@@ -136,6 +159,7 @@ class MyProfilesReorderScreenState
               ),
             ],
           ),
+        ),
         ),
       ),
     );

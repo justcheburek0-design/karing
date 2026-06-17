@@ -70,10 +70,10 @@ class CommonWidget {
             child: Icon(
               Icons.warning_amber_outlined,
               size: 30,
-              color: Colors.red,
+              color: ThemeDefine.kColorPrimary,
             ),
           ),
-        ),
+        ],
       );
     }
     late Color color;
@@ -82,7 +82,7 @@ class CommonWidget {
     } else if (la < 1500) {
       color = themes.getThemeInvertBgColor(context);
     } else {
-      color = Colors.red;
+      color = ThemeDefine.kColorPrimary;
     }
 
     return SizedBox(
@@ -143,7 +143,7 @@ class CommonWidget {
           "↑ ${traffic.upload} ↓ ${traffic.download} / ${traffic.total}",
           style: TextStyle(
             fontSize: fontSize,
-            color: traffic.overQuota ? Colors.red : null,
+            color: traffic.overQuota ? ThemeDefine.kColorPrimary : null,
           ),
         ),
         const SizedBox(width: 5),
@@ -162,7 +162,7 @@ class CommonWidget {
                 expireTime,
                 style: TextStyle(
                   fontSize: fontSize,
-                  color: expiring ? Colors.red : null,
+                  color: expiring ? ThemeDefine.kColorPrimary : null,
                 ),
               ),
               ServerManager.isReloadingTraffic(groupId)

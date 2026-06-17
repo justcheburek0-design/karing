@@ -1,5 +1,6 @@
 import 'package:karing/i18n/strings.g.dart';
 import 'package:karing/screens/theme_config.dart';
+import 'package:karing/screens/theme_define.dart';
 import 'package:karing/screens/widgets/sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -77,130 +78,144 @@ class _FileViewScreenState extends State<FileViewScreen> {
     final tcontext = Translations.of(context);
     Size windowSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: const SizedBox(
-                      width: 50,
-                      height: 30,
-                      child: Icon(Icons.arrow_back_ios_outlined, size: 26),
-                    ),
-                  ),
-                  SizedBox(
-                    width: windowSize.width - 50 * 3,
-                    child: Text(
-                      widget.title,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: ThemeConfig.kFontWeightTitle,
-                        fontSize: ThemeConfig.kFontSizeTitle,
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: ThemeDefine.kHomeGradient,
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: const SizedBox(
+                        width: 50,
+                        height: 30,
+                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
                       ),
                     ),
-                  ),
-                  if (widget.content.isNotEmpty) ...[
-                    InkWell(
-                      onTap: () {
-                        try {
-                          Clipboard.setData(
-                            ClipboardData(text: widget.content),
-                          );
-                        } catch (e) {}
-                      },
-                      child: Tooltip(
-                        message: tcontext.meta.copy,
-                        child: const SizedBox(
-                          width: 50,
-                          height: 30,
-                          child: Icon(Icons.copy, size: 26),
+                    SizedBox(
+                      width: windowSize.width - 50 * 3,
+                      child: Text(
+                        widget.title,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: ThemeConfig.kFontWeightTitle,
+                          fontSize: ThemeConfig.kFontSizeTitle,
                         ),
                       ),
                     ),
-                  ],
-                  if (widget.onSave != null) ...[
-                    InkWell(
-                      onTap: () async {
-                        widget.onSave!(context, _controller.text);
-                      },
-                      child: Tooltip(
-                        message: tcontext.meta.save,
-                        child: const SizedBox(
-                          width: 50,
-                          height: 30,
-                          child: Icon(Icons.done, size: 26),
+                    if (widget.content.isNotEmpty) ...[
+                      InkWell(
+                        onTap: () {
+                          try {
+                            Clipboard.setData(
+                              ClipboardData(text: widget.content),
+                            );
+                          } catch (e) {}
+                        },
+                        child: Tooltip(
+                          message: tcontext.meta.copy,
+                          child: const SizedBox(
+                            width: 50,
+                            height: 30,
+                            child: Icon(Icons.copy, size: 26),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                  if (widget.content.isEmpty && widget.onSave == null) ...[
-                    const SizedBox(width: 50),
-                  ],
-                ],
-              ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-                  child: CodeEditor(
-                    readOnly: widget.onSave == null,
-                    showCursorWhenReadOnly: widget.onSave == null,
-                    focusNode: _focusNode,
-                    scrollbarBuilder: (context, child, details) {
-                      return Scrollbar(
-                        controller: details.controller,
-                        thickness: 8,
-                        radius: const Radius.circular(2),
-                        interactive: true,
-                        child: child,
-                      );
-                    },
-                    indicatorBuilder:
-                        (
-                          context,
-                          editingController,
-                          chunkController,
-                          notifier,
-                        ) {
-                          return Row(
-                            children: [
-                              DefaultCodeLineNumber(
-                                controller: editingController,
-                                notifier: notifier,
-                              ),
-                              DefaultCodeChunkIndicator(
-                                width: 20,
-                                controller: chunkController,
-                                notifier: notifier,
-                              ),
-                            ],
-                          );
+                    ],
+                    if (widget.onSave != null) ...[
+                      InkWell(
+                        onTap: () async {
+                          widget.onSave!(context, _controller.text);
                         },
-                    shortcutsActivatorsBuilder:
-                        DefaultCodeShortcutsActivatorsBuilder(),
-                    controller: _controller,
-                    toolbarController: _toolbarController,
-                    style: CodeEditorStyle(
-                      fontSize: 14,
-                      codeTheme: CodeHighlightTheme(
-                        languages: {
-                          'yaml': CodeHighlightThemeMode(mode: langYaml),
-                          'json': CodeHighlightThemeMode(mode: langJson),
-                        },
-                        theme: atomOneLightTheme,
+                        child: Tooltip(
+                          message: tcontext.meta.save,
+                          child: const SizedBox(
+                            width: 50,
+                            height: 30,
+                            child: Icon(Icons.done, size: 26),
+                          ),
+                        ),
+                      ),
+                    ],
+                    if (widget.content.isEmpty && widget.onSave == null) ...[
+                      const SizedBox(width: 50),
+                    ],
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
+                    child: CodeEditor(
+                      readOnly: widget.onSave == null,
+                      showCursorWhenReadOnly: widget.onSave == null,
+                      focusNode: _focusNode,
+                      scrollbarBuilder: (context, child, details) {
+                        return Scrollbar(
+                          controller: details.controller,
+                          thickness: 8,
+                          radius: const Radius.circular(2),
+                          interactive: true,
+                          child: child,
+                        );
+                      },
+                      indicatorBuilder:
+                          (
+                            context,
+                            editingController,
+                            chunkController,
+                            notifier,
+                          ) {
+                            return Row(
+                              children: [
+                                DefaultCodeLineNumber(
+                                  controller: editingController,
+                                  notifier: notifier,
+                                ),
+                                DefaultCodeChunkIndicator(
+                                  width: 20,
+                                  controller: chunkController,
+                                  notifier: notifier,
+                                ),
+                              ],
+                            );
+                          },
+                      shortcutsActivatorsBuilder:
+                          DefaultCodeShortcutsActivatorsBuilder(),
+                      controller: _controller,
+                      toolbarController: _toolbarController,
+                      style: CodeEditorStyle(
+                        fontSize: 14,
+                        codeTheme: CodeHighlightTheme(
+                          languages: {
+                            'yaml': CodeHighlightThemeMode(mode: langYaml),
+                            'json': CodeHighlightThemeMode(mode: langJson),
+                          },
+                          theme: atomOneLightTheme,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

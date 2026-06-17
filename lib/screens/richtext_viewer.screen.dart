@@ -8,6 +8,7 @@ import 'package:karing/app/utils/path_utils.dart';
 import 'package:karing/i18n/strings.g.dart';
 import 'package:karing/screens/dialog_utils.dart';
 import 'package:karing/screens/theme_config.dart';
+import 'package:karing/screens/theme_define.dart';
 import 'package:karing/screens/widgets/framework.dart';
 import 'package:karing/screens/widgets/sheet.dart';
 import 'package:path/path.dart' as path;
@@ -65,67 +66,81 @@ class _RichtextViewScreenState extends LasyRenderingState<RichtextViewScreen> {
     final tcontext = Translations.of(context);
     Size windowSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: const SizedBox(
-                      width: 50,
-                      height: 30,
-                      child: Icon(Icons.arrow_back_ios_outlined, size: 26),
-                    ),
-                  ),
-                  SizedBox(
-                    width: windowSize.width - 50 * 2,
-                    child: Text(
-                      widget.title,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: ThemeConfig.kFontWeightTitle,
-                        fontSize: ThemeConfig.kFontSizeTitle,
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: ThemeDefine.kHomeGradient,
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: const SizedBox(
+                        width: 50,
+                        height: 30,
+                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
                       ),
                     ),
-                  ),
-                  if (widget.showAction) ...[
-                    InkWell(
-                      onTap: () {
-                        onTapMore();
-                      },
-                      child: Tooltip(
-                        message: tcontext.meta.more,
-                        child: const SizedBox(
-                          width: 50,
-                          height: 30,
-                          child: Icon(Icons.more_vert_outlined, size: 26),
+                    SizedBox(
+                      width: windowSize.width - 50 * 2,
+                      child: Text(
+                        widget.title,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: ThemeConfig.kFontWeightTitle,
+                          fontSize: ThemeConfig.kFontSizeTitle,
                         ),
                       ),
                     ),
-                  ],
-                  if (!widget.showAction) ...[SizedBox(width: 50)],
-                ],
-              ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        child: Text.rich(TextSpan(text: _content ?? "")),
+                    if (widget.showAction) ...[
+                      InkWell(
+                        onTap: () {
+                          onTapMore();
+                        },
+                        child: Tooltip(
+                          message: tcontext.meta.more,
+                          child: const SizedBox(
+                            width: 50,
+                            height: 30,
+                            child: Icon(Icons.more_vert_outlined, size: 26),
+                          ),
+                        ),
                       ),
                     ],
+                    if (!widget.showAction) ...[SizedBox(width: 50)],
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: Text.rich(TextSpan(text: _content ?? "")),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

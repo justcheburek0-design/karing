@@ -4,6 +4,7 @@ import 'package:karing/app/utils/sentry_utils.dart';
 import 'package:karing/i18n/strings.g.dart';
 import 'package:karing/screens/dialog_utils.dart';
 import 'package:karing/screens/theme_config.dart';
+import 'package:karing/screens/theme_define.dart';
 import 'package:karing/screens/widgets/framework.dart';
 import 'package:karing/screens/widgets/text_field.dart';
 
@@ -43,8 +44,18 @@ class _SentryFeedbackScreenState extends LasyRenderingState<FeedbackScreen> {
     final tcontext = Translations.of(context);
     Size windowSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(gradient: ThemeDefine.kHomeGradient),
+        child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
           child: Column(
@@ -118,6 +129,7 @@ class _SentryFeedbackScreenState extends LasyRenderingState<FeedbackScreen> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

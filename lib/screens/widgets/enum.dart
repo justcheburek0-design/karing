@@ -5,7 +5,7 @@ import 'package:hotkey_manager/hotkey_manager.dart';
 
 enum ChipType { action, delete }
 
-enum CommonCardType { plain, filled }
+enum CommonCardType { plain, filled, glass }
 //
 // extension CommonCardTypeExt on CommonCardType {
 //   CommonCardType get variant => CommonCardType.plain;

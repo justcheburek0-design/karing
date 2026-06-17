@@ -74,9 +74,16 @@ class _AddProfileByScanQrcodeScanScreenState
           ScaffoldMessenger.of(context).removeCurrentSnackBar();
         }
       },
-      child: Scaffold(
-        appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-        body: SafeArea(
+      child: Container(
+        decoration: BoxDecoration(gradient: ThemeDefine.kHomeGradient),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          extendBodyBehindAppBar: true,
+          appBar: PreferredSize(
+            preferredSize: Size.zero,
+            child: AppBar(backgroundColor: Colors.transparent, elevation: 0),
+          ),
+          body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
             child: Column(
@@ -94,6 +101,7 @@ class _AddProfileByScanQrcodeScanScreenState
               ],
             ),
           ),
+        ),
         ),
       ),
     );
@@ -121,6 +129,7 @@ class _AddProfileByScanQrcodeScanScreenState
             style: const TextStyle(
               fontWeight: ThemeConfig.kFontWeightTitle,
               fontSize: ThemeConfig.kFontSizeTitle,
+              color: ThemeDefine.kColorOnSurface,
             ),
           ),
         ),

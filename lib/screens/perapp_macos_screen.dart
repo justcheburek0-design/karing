@@ -159,11 +159,18 @@ class _PerAppMacosScreenState extends LasyRenderingState<PerAppMacosScreen> {
     final tcontext = Translations.of(context);
     Size windowSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(backgroundColor: Colors.transparent, elevation: 0),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(gradient: ThemeDefine.kHomeGradient),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Column(
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
@@ -175,7 +182,7 @@ class _PerAppMacosScreenState extends LasyRenderingState<PerAppMacosScreen> {
                       child: const SizedBox(
                         width: 50,
                         height: 30,
-                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
+                        child: Icon(Icons.arrow_back_ios_outlined, size: 26, color: ThemeDefine.kColorOnSurface),
                       ),
                     ),
                     SizedBox(
@@ -187,6 +194,7 @@ class _PerAppMacosScreenState extends LasyRenderingState<PerAppMacosScreen> {
                         style: const TextStyle(
                           fontWeight: ThemeConfig.kFontWeightTitle,
                           fontSize: ThemeConfig.kFontSizeTitle,
+                          color: ThemeDefine.kColorOnSurface,
                         ),
                       ),
                     ),
@@ -199,7 +207,7 @@ class _PerAppMacosScreenState extends LasyRenderingState<PerAppMacosScreen> {
                         child: const SizedBox(
                           width: 50,
                           height: 30,
-                          child: Icon(Icons.more_vert_outlined, size: 30),
+                          child: Icon(Icons.more_vert_outlined, size: 30, color: ThemeDefine.kColorOnSurface),
                         ),
                       ),
                     ),
@@ -227,8 +235,9 @@ class _PerAppMacosScreenState extends LasyRenderingState<PerAppMacosScreen> {
                 padding: const EdgeInsets.only(left: 15, right: 15),
                 height: 44,
                 width: double.infinity,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   borderRadius: ThemeDefine.kBorderRadius,
+                  color: ThemeDefine.kColorSurfaceVariant.withOpacity(0.3),
                 ),
                 child: TextFieldEx(
                   controller: _searchController,
@@ -237,11 +246,12 @@ class _PerAppMacosScreenState extends LasyRenderingState<PerAppMacosScreen> {
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    icon: Icon(Icons.search_outlined),
+                    icon: Icon(Icons.search_outlined, color: ThemeDefine.kColorOnSurfaceVariant),
                     hintText: tcontext.meta.search,
+                    hintStyle: TextStyle(color: ThemeDefine.kColorOnSurfaceVariant),
                     suffixIcon: _searchController.text.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.clear_outlined),
+                            icon: Icon(Icons.clear_outlined, color: ThemeDefine.kColorOnSurfaceVariant),
                             onPressed: _clearSearch,
                           )
                         : null,
@@ -253,6 +263,7 @@ class _PerAppMacosScreenState extends LasyRenderingState<PerAppMacosScreen> {
             ],
           ),
         ),
+      ),
       ),
     );
   }
@@ -281,7 +292,7 @@ class _PerAppMacosScreenState extends LasyRenderingState<PerAppMacosScreen> {
           return createWidget(current, windowSize);
         },
         separatorBuilder: (BuildContext context, int index) {
-          return const Divider(height: 1, thickness: 0.3);
+          return Divider(height: 1, thickness: 0.3, color: ThemeDefine.kColorOnSurface.withOpacity(0.08));
         },
       ),
     );
@@ -289,6 +300,7 @@ class _PerAppMacosScreenState extends LasyRenderingState<PerAppMacosScreen> {
 
   Widget createWidget(ProcessInfo current, Size windowSize) {
     return Material(
+      color: Colors.transparent,
       borderRadius: ThemeDefine.kBorderRadius,
       child: InkWell(
         onTap: () {},

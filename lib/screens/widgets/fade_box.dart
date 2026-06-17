@@ -3,6 +3,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 
 import 'constant.dart';
+import 'card.dart';
 
 class FadeBox extends StatelessWidget {
   final Widget child;
@@ -146,5 +147,36 @@ class FadeScaleEnterTransition extends StatelessWidget {
         child: child,
       ),
     );
+  }
+}
+
+/// A glass-style card wrapper with fade-scale enter animation.
+/// Matches the Max Speed VPN design: rounded corners, semi-transparent background, thin border.
+class GlassCardBox extends StatelessWidget {
+  final Widget child;
+  final bool animated;
+  final Info? info;
+  final List<Widget> actions;
+
+  const GlassCardBox({
+    super.key,
+    required this.child,
+    this.animated = true,
+    this.info,
+    this.actions = const [],
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final card = CommonCard(
+      type: CommonCardType.glass,
+      info: info,
+      enterAnimated: false,
+      child: child,
+    );
+
+    if (!animated) return card;
+
+    return FadeScaleEnterBox(child: card);
   }
 }

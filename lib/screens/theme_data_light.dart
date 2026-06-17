@@ -2,17 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:karing/screens/theme_define.dart';
 
 class ThemeDataLight {
-  static const Color mainColor = Colors.white;
-  static const Color mainBgColor = Color(0xFFF0F0F0);
+  // ── Max Speed VPN light palette ─────────────────────────────
+  static const Color mainColor = Color(0xFFF5F5EF); // card / surface bg
+  static const Color mainBgColor = Color(0xFFEDEDE6); // scaffold bg
+
   static ThemeData theme(BuildContext context) {
     final ColorScheme scheme = ColorScheme.fromSeed(
-      seedColor: mainColor,
+      seedColor: ThemeDefine.kColorPrimary,
       brightness: Brightness.light,
-      primary: ThemeDefine.kColorBlue,
+      primary: ThemeDefine.kColorPrimary,
+      onPrimary: const Color(0xFF0A0A0D),
+      primaryContainer: const Color(0xFFD4F58E),
+      onPrimaryContainer: const Color(0xFF1A2E00),
+      secondary: const Color(0xFF5A6145),
+      onSecondary: Colors.white,
+      secondaryContainer: const Color(0xFFDDE6C3),
       surface: mainBgColor,
-      //surfaceContainer:mainBgColor,
+      onSurface: const Color(0xFF1A1C16),
+      surfaceContainerHighest: mainColor,
+      surfaceContainerHigh: mainColor,
+      surfaceContainer: mainColor,
       surfaceContainerLow: mainColor,
-      secondaryContainer: Colors.grey[350],
+      surfaceContainerLowest: Colors.white,
+      outline: const Color(0xFF7A7B6E),
+      outlineVariant: const Color(0xFFBFC0B0),
+      error: const Color(0xFFD32F2F),
+      onError: Colors.white,
     );
 
     return ThemeData(
@@ -20,51 +35,57 @@ class ThemeDataLight {
       colorScheme: scheme,
       platform: TargetPlatform.iOS,
       scaffoldBackgroundColor: scheme.surface,
-      cardTheme: const CardThemeData(color: Colors.white),
+      cardTheme: CardThemeData(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        elevation: 0,
+      ),
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: Colors.white,
       ),
       inputDecorationTheme: InputDecorationTheme(
-        fillColor: mainBgColor.withValues(alpha: 0.5),
+        fillColor: mainColor.withValues(alpha: 0.5),
         filled: true,
-        labelStyle: TextStyle(color: Colors.grey),
-        floatingLabelStyle: TextStyle(color: ThemeDefine.kColorBlue),
-        helperStyle: TextStyle(color: Colors.grey),
-        hintStyle: TextStyle(color: Colors.grey),
-        errorStyle: TextStyle(color: Colors.red),
+        labelStyle: const TextStyle(color: Color(0xFF5A6145)),
+        floatingLabelStyle: TextStyle(color: ThemeDefine.kColorPrimary),
+        helperStyle: const TextStyle(color: Color(0xFF5A6145)),
+        hintStyle: const TextStyle(color: Color(0xFF5A6145)),
+        errorStyle: const TextStyle(color: Color(0xFFD32F2F)),
         isDense: true,
-        contentPadding: EdgeInsets.all(8),
+        contentPadding: const EdgeInsets.all(8),
         border: OutlineInputBorder(
-          borderSide: BorderSide(color: ThemeDefine.kColorBlue),
-          borderRadius: BorderRadius.all(Radius.circular(4)),
+          borderSide: const BorderSide(color: Color(0xFF7A7B6E)),
+          borderRadius: BorderRadius.all(Radius.circular(16)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: ThemeDefine.kColorBlue),
-          borderRadius: BorderRadius.all(Radius.circular(4)),
+          borderSide: BorderSide(color: ThemeDefine.kColorPrimary, width: 2),
+          borderRadius: BorderRadius.all(Radius.circular(16)),
         ),
       ),
-      listTileTheme: ListTileThemeData(dense: true),
+      listTileTheme: const ListTileThemeData(dense: true),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
           backgroundColor: WidgetStateProperty.resolveWith((
             Set<WidgetState> states,
           ) {
             if (states.contains(WidgetState.focused)) {
-              return ThemeDefine.kColorBlue[800];
+              return ThemeDefine.kColorPrimary.withValues(alpha: 0.8);
             }
             if (states.contains(WidgetState.selected)) {
-              return ThemeDefine.kColorBlue[200];
+              return ThemeDefine.kColorPrimary.withValues(alpha: 0.6);
             }
-            return ThemeDefine.kColorBlue;
+            return ThemeDefine.kColorPrimary;
           }),
           foregroundColor: WidgetStateProperty.resolveWith((
             Set<WidgetState> states,
           ) {
-            return Colors.white;
+            return const Color(0xFF0A0A0D);
           }),
           shape: WidgetStateProperty.resolveWith((Set<WidgetState> states) {
             return RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(35),
+              borderRadius: BorderRadius.circular(28),
             );
           }),
         ),
@@ -74,15 +95,18 @@ class ThemeDataLight {
           return Colors.white;
         }),
         checkColor: WidgetStateProperty.resolveWith((Set<WidgetState> states) {
-          return ThemeDefine.kColorGreenBright;
+          return ThemeDefine.kColorPrimary;
         }),
         overlayColor: WidgetStateProperty.resolveWith((
           Set<WidgetState> states,
         ) {
-          return Colors.grey;
+          return const Color(0xFF7A7B6E);
         }),
       ),
-      progressIndicatorTheme: ProgressIndicatorThemeData(strokeWidth: 2),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: ThemeDefine.kColorPrimary,
+        strokeWidth: 2,
+      ),
     );
   }
 }

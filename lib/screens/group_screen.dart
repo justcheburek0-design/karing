@@ -9,6 +9,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:karing/screens/dialog_utils.dart';
 import 'package:karing/screens/group_item_creator.dart';
 import 'package:karing/screens/theme_config.dart';
+import 'package:karing/screens/theme_define.dart';
 import 'package:karing/screens/widgets/framework.dart';
 
 class GroupScreen extends LasyRenderingStatefulWidget {
@@ -73,111 +74,147 @@ class GroupScreenState extends LasyRenderingState<GroupScreen>
     Size windowSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    !widget.hasReturn
-                        ? const SizedBox(width: 50)
-                        : InkWell(
-                            onTap: () => Navigator.pop(context),
-                            child: const SizedBox(
-                              width: 50,
-                              height: 30,
-                              child: Icon(
-                                Icons.arrow_back_ios_outlined,
-                                size: 26,
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: ThemeDefine.kHomeGradient,
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      !widget.hasReturn
+                          ? const SizedBox(width: 50)
+                          : InkWell(
+                              onTap: () => Navigator.pop(context),
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: ThemeDefine.kColorSurfaceVariant
+                                      .withOpacity(0.15),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Icon(
+                                  Icons.arrow_back_ios_outlined,
+                                  size: 22,
+                                  color: ThemeDefine.kColorOnSurface,
+                                ),
                               ),
                             ),
+                      SizedBox(
+                        width: windowSize.width - 50 * 2,
+                        child: Text(
+                          widget.title,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: ThemeConfig.kFontWeightTitle,
+                            fontSize: ThemeConfig.kFontSizeTitle,
+                            color: ThemeDefine.kColorOnSurface,
                           ),
-                    SizedBox(
-                      width: windowSize.width - 50 * 2,
-                      child: Text(
-                        widget.title,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontWeight: ThemeConfig.kFontWeightTitle,
-                          fontSize: ThemeConfig.kFontSizeTitle,
                         ),
                       ),
-                    ),
-                    widget.onDone != null
-                        ? InkWell(
-                            onTap: () async {
-                              if (await widget.onDone!(context)) {
-                                Navigator.pop(context, true);
-                              }
-                              setState(() {});
-                            },
-                            child: SizedBox(
-                              width: 50,
-                              height: 30,
-                              child: Icon(
-                                widget.onDoneIcon ?? Icons.done_outlined,
-                                size: 26,
-                              ),
-                            ),
-                          )
-                        : widget.tipsIfNoOnDone != null &&
-                              widget.tipsIfNoOnDone!.isNotEmpty
-                        ? Tooltip(
-                            message: widget.tipsIfNoOnDone,
-                            child: InkWell(
-                              onTap: () {
-                                DialogUtils.showAlertDialog(
-                                  context,
-                                  widget.tipsIfNoOnDone!,
-                                );
+                      widget.onDone != null
+                          ? InkWell(
+                              onTap: () async {
+                                if (await widget.onDone!(context)) {
+                                  Navigator.pop(context, true);
+                                }
+                                setState(() {});
                               },
-                              child: const SizedBox(
-                                width: 50,
-                                height: 30,
-                                child: Icon(Icons.info_outlined, size: 20),
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: ThemeDefine.kColorPrimary
+                                      .withOpacity(0.15),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(
+                                  widget.onDoneIcon ?? Icons.done_outlined,
+                                  size: 22,
+                                  color: ThemeDefine.kColorPrimary,
+                                ),
                               ),
-                            ),
-                          )
-                        : const SizedBox(width: 50),
-                  ],
+                            )
+                          : widget.tipsIfNoOnDone != null &&
+                                  widget.tipsIfNoOnDone!.isNotEmpty
+                              ? Tooltip(
+                                  message: widget.tipsIfNoOnDone,
+                                  child: InkWell(
+                                    onTap: () {
+                                      DialogUtils.showAlertDialog(
+                                        context,
+                                        widget.tipsIfNoOnDone!,
+                                      );
+                                    },
+                                    child: Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: ThemeDefine.kColorSurfaceVariant
+                                            .withOpacity(0.15),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: const Icon(
+                                        Icons.info_outlined,
+                                        size: 20,
+                                        color: ThemeDefine.kColorOnSurface,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox(width: 50),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                  child: Scrollbar(
-                    thumbVisibility: true,
-                    child: SingleChildScrollView(
-                      child: FutureBuilder(
-                        future: getGroupOptionsWithTryCatch(),
-                        builder:
-                            (
-                              BuildContext context,
-                              AsyncSnapshot<List<GroupItem>> snapshot,
-                            ) {
-                              List<GroupItem> data = snapshot.hasData
-                                  ? snapshot.data!
-                                  : [];
-                              List<Widget> children = [];
+                const SizedBox(height: 10),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                    child: Scrollbar(
+                      thumbVisibility: true,
+                      child: SingleChildScrollView(
+                        child: FutureBuilder(
+                          future: getGroupOptionsWithTryCatch(),
+                          builder:
+                              (
+                                BuildContext context,
+                                AsyncSnapshot<List<GroupItem>> snapshot,
+                              ) {
+                            List<GroupItem> data = snapshot.hasData
+                                ? snapshot.data!
+                                : [];
+                            List<Widget> children = [];
 
-                              children.addAll(
-                                GroupItemCreator.createGroups(context, data),
-                              );
-                              return Column(children: children);
-                            },
+                            children.addAll(
+                              GroupItemCreator.createGroups(context, data),
+                            );
+                            return Column(children: children);
+                          },
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

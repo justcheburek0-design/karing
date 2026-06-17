@@ -8,6 +8,7 @@ import 'package:karing/app/utils/assets_utils.dart';
 import 'package:karing/i18n/strings.g.dart';
 
 import 'package:karing/screens/theme_config.dart';
+import 'package:karing/screens/theme_define.dart';
 import 'package:karing/screens/webview_helper.dart';
 import 'package:karing/screens/widgets/framework.dart';
 
@@ -40,8 +41,12 @@ class _UserAgreementScreenState
     return PopScope(
       canPop: false,
       child: Scaffold(
-        appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-        body: SafeArea(
+        backgroundColor: Colors.transparent,
+        extendBodyBehindAppBar: true,
+        appBar: PreferredSize(preferredSize: Size.zero, child: AppBar(backgroundColor: Colors.transparent, elevation: 0)),
+        body: Container(
+          decoration: const BoxDecoration(gradient: ThemeDefine.kHomeGradient),
+          child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(18, 20, 18, 0),
             child: Column(
@@ -55,6 +60,7 @@ class _UserAgreementScreenState
                         style: const TextStyle(
                           fontSize: ThemeConfig.kFontSizeListItem,
                           fontWeight: ThemeConfig.kFontWeightListItem,
+                          color: ThemeDefine.kColorOnSurface,
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -96,7 +102,7 @@ class _UserAgreementScreenState
                               child: Text(
                                 tcontext.meta.termOfUse,
                                 style: const TextStyle(
-                                  color: Colors.blueAccent,
+                                  color: ThemeDefine.kColorPrimary,
                                 ),
                               ),
                               onTap: () async {
@@ -114,7 +120,7 @@ class _UserAgreementScreenState
                           InkWell(
                             child: Text(
                               tcontext.meta.privacyPolicy,
-                              style: const TextStyle(color: Colors.blueAccent),
+                              style: const TextStyle(color: ThemeDefine.kColorPrimary),
                             ),
                             onTap: () async {
                               var remoteConfig =
@@ -137,6 +143,7 @@ class _UserAgreementScreenState
             ),
           ),
         ),
+        ),  // closes Container
       ),
     );
   }

@@ -24,6 +24,7 @@ import 'package:karing/screens/home_screen_widgets.dart';
 import 'package:karing/screens/net_connections_screen.dart';
 import 'package:karing/screens/richtext_viewer.screen.dart';
 import 'package:karing/screens/theme_config.dart';
+import 'package:karing/screens/theme_define.dart';
 import 'package:karing/screens/widgets/framework.dart';
 import 'package:karing/screens/widgets/grid.dart';
 import 'package:karing/screens/widgets/num.dart';
@@ -345,7 +346,7 @@ class _HomeTVOSScreenState extends LasyRenderingState<HomeTVOSScreen>
                                 Icon(
                                   Icons.remove_circle_outlined,
                                   size: 26,
-                                  color: Colors.red,
+                                  color: ThemeDefine.kColorPrimary,
                                 ),
                               ],
                             ),

@@ -110,87 +110,143 @@ class _DnsSettingsScreenState extends LasyRenderingState<DnsSettingsScreen> {
     Size windowSize = MediaQuery.of(context).size;
     final tcontext = Translations.of(context);
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: const SizedBox(
-                        width: 50,
-                        height: 30,
-                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
-                      ),
-                    ),
-                    SizedBox(
-                      width: windowSize.width - 50 * 3,
-                      child: Text(
-                        widget.title,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontWeight: ThemeConfig.kFontWeightTitle,
-                          fontSize: ThemeConfig.kFontSizeTitle,
-                        ),
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        _taskQueue != null
-                            ? const Row(
-                                children: [
-                                  SizedBox(width: 12),
-                                  SizedBox(
-                                    width: 26,
-                                    height: 26,
-                                    child: RepaintBoundary(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  ),
-                                  SizedBox(width: 12),
-                                ],
-                              )
-                            : InkWell(
-                                onTap: () async {
-                                  checkLatency();
-                                },
-                                child: Tooltip(
-                                  message: tcontext.meta.latencyTest,
-                                  child: const SizedBox(
-                                    width: 50,
-                                    height: 30,
-                                    child: Icon(Icons.bolt_outlined, size: 26),
-                                  ),
-                                ),
-                              ),
-                        InkWell(
-                          onTap: () async {
-                            onTapMore();
-                          },
-                          child: Tooltip(
-                            message: tcontext.meta.more,
-                            child: const SizedBox(
-                              width: 50,
-                              height: 30,
-                              child: Icon(Icons.more_vert_outlined, size: 30),
-                            ),
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: ThemeDefine.kHomeGradient,
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: ThemeDefine.kColorSurfaceVariant
+                                .withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.arrow_back_ios_outlined,
+                            size: 22,
+                            color: ThemeDefine.kColorOnSurface,
                           ),
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                      SizedBox(
+                        width: windowSize.width - 50 * 3,
+                        child: Text(
+                          widget.title,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: ThemeConfig.kFontWeightTitle,
+                            fontSize: ThemeConfig.kFontSizeTitle,
+                            color: ThemeDefine.kColorOnSurface,
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          _taskQueue != null
+                              ? const Row(
+                                  children: [
+                                    SizedBox(width: 12),
+                                    SizedBox(
+                                      width: 26,
+                                      height: 26,
+                                      child: RepaintBoundary(
+                                        child: CircularProgressIndicator(
+                                          color: ThemeDefine.kColorPrimary,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 12),
+                                  ],
+                                )
+                              : InkWell(
+                                  onTap: () async {
+                                    checkLatency();
+                                  },
+                                  child: Tooltip(
+                                    message: tcontext.meta.latencyTest,
+                                    child: Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: ThemeDefine.kColorSurfaceVariant
+                                            .withOpacity(0.15),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: const Icon(
+                                        Icons.bolt_outlined,
+                                        size: 22,
+                                        color: ThemeDefine.kColorOnSurface,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                          InkWell(
+                            onTap: () async {
+                              onTapMore();
+                            },
+                            child: Tooltip(
+                              message: tcontext.meta.more,
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: ThemeDefine.kColorSurfaceVariant
+                                      .withOpacity(0.15),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Icon(
+                                  Icons.more_vert_outlined,
+                                  size: 26,
+                                  color: ThemeDefine.kColorOnSurface,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Expanded(child: _loadListView()),
-            ],
+                const SizedBox(height: 10),
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: ThemeDefine.kColorSurface.withOpacity(0.5),
+                      borderRadius: ThemeDefine.kBorderRadius,
+                      border: Border.all(
+                        color: ThemeDefine.kColorOutline.withOpacity(0.08),
+                      ),
+                    ),
+                    child: _loadListView(),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

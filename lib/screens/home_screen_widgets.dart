@@ -98,7 +98,7 @@ abstract class SwitchCardState<T extends SwitchCard> extends State<T> {
               ),
               Switch.adaptive(
                 value: enable,
-                activeThumbColor: Colors.white,
+                activeThumbColor: ThemeDefine.kColorOnSurface,
                 activeTrackColor: ThemeDefine.kColorGreenBright,
                 onChanged: (value) {
                   final statusText = value
@@ -194,7 +194,7 @@ abstract class FutureSwitchCardState<T extends FutureSwitchCard>
                   enabled = snapshot.hasData && snapshot.data!;
                   return Switch.adaptive(
                     value: enabled,
-                    activeThumbColor: Colors.white,
+                    activeThumbColor: ThemeDefine.kColorOnSurface,
                     activeTrackColor: ThemeDefine.kColorGreenBright,
                     onChanged: (value) {
                       final statusText = value
@@ -883,7 +883,7 @@ class _ProfileSubTrafficInfoState extends State<ProfileSubTrafficInfoCard> {
       final ts = theme.textTheme.bodyMedium?.toLight.adjustSize(1);
       textStyle = TextStyle(
         fontSize: ts!.fontSize,
-        color: expiring ? Colors.red : ts.color,
+        color: expiring ? ThemeDefine.kColorPrimary : ts.color,
       );
     }
 
@@ -1726,7 +1726,7 @@ class _ServerSelectCardState extends State<ServerSelectCard> {
       width -= CommonWidget.kLatencyWidget + 5;
     }
     return Material(
-      color: theme.colorScheme.surfaceContainerLow.withAlpha(alpha),
+      color: ThemeDefine.kColorSurface.withAlpha(alpha),
       child: Tooltip(
         message: tcontext.ServerSelectScreen.title,
         child: InkWell(

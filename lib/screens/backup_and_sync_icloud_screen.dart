@@ -57,45 +57,63 @@ class _BackupAndSyncIcloudScreenState
     final tcontext = Translations.of(context);
     Size windowSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: const SizedBox(
-                        width: 50,
-                        height: 30,
-                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
-                      ),
-                    ),
-                    SizedBox(
-                      width: windowSize.width - 50 * 2,
-                      child: Text(
-                        tcontext.meta.iCloud,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontWeight: ThemeConfig.kFontWeightTitle,
-                          fontSize: ThemeConfig.kFontSizeTitle,
+      backgroundColor: ThemeDefine.kColorBgPrimary,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: InkWell(
+            onTap: () => Navigator.pop(context),
+            child: const Icon(Icons.arrow_back_ios_outlined, size: 24),
+          ),
+          title: Text(
+            tcontext.meta.iCloud,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontWeight: ThemeConfig.kFontWeightTitle,
+              fontSize: ThemeConfig.kFontSizeTitle,
+              color: ThemeDefine.kColorOnSurface,
+            ),
+          ),
+          centerTitle: true,
+          actions: [
+            _uploading
+                ? const Row(
+                    children: [
+                      SizedBox(width: 12),
+                      SizedBox(
+                        width: 26,
+                        height: 26,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: ThemeDefine.kColorPrimary,
                         ),
                       ),
-                    ),
-                    Row(
-                      children: [
-                        _uploading
-                            ? const Row(
-                                children: [
-                                  SizedBox(width: 12),
-                                  SizedBox(
-                                    width: 26,
+                      SizedBox(width: 12),
+                    ],
+                  )
+                : const SizedBox.shrink(),
+          ],
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              ThemeDefine.kColorBgPrimary,
+              ThemeDefine.kColorBgSecondary,
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+            child: Column(
+              children: [
                                     height: 26,
                                     child: RepaintBoundary(
                                       child: CircularProgressIndicator(),

@@ -16,6 +16,7 @@ import 'package:karing/screens/group_helper.dart';
 import 'package:karing/screens/group_item_creator.dart';
 import 'package:karing/screens/group_item_options.dart';
 import 'package:karing/screens/theme_config.dart';
+import 'package:karing/screens/theme_define.dart';
 import 'package:karing/screens/widgets/framework.dart';
 import 'package:karing/screens/widgets/text_field.dart';
 import 'package:tuple/tuple.dart';
@@ -278,39 +279,62 @@ class _AddProfileByLinkOrContentScreenState
     final tcontext = Translations.of(context);
     Size windowSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: const SizedBox(
-                      width: 50,
-                      height: 30,
-                      child: Icon(Icons.arrow_back_ios_outlined, size: 26),
-                    ),
-                  ),
-                  SizedBox(
-                    width:
-                        windowSize.width -
-                        (!_loading && _remoteContent.text.isNotEmpty
-                            ? 50 * 3
-                            : 50 * 2),
-                    child: Text(
-                      tcontext.meta.profileAddUrlOrContent,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: ThemeConfig.kFontWeightTitle,
-                        fontSize: ThemeConfig.kFontSizeTitle,
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: ThemeDefine.kHomeGradient,
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: ThemeDefine.kColorSurfaceVariant
+                              .withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          Icons.arrow_back_ios_outlined,
+                          size: 22,
+                          color: ThemeDefine.kColorOnSurface,
+                        ),
                       ),
                     ),
-                  ),
+                    SizedBox(
+                      width:
+                          windowSize.width -
+                          (!_loading && _remoteContent.text.isNotEmpty
+                              ? 50 * 3
+                              : 50 * 2),
+                      child: Text(
+                        tcontext.meta.profileAddUrlOrContent,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: ThemeConfig.kFontWeightTitle,
+                          fontSize: ThemeConfig.kFontSizeTitle,
+                          color: ThemeDefine.kColorOnSurface,
+                        ),
+                      ),
+                    ),
                   if (!_loading && _remoteContent.text.isNotEmpty) ...[
                     InkWell(
                       onTap: () {
@@ -420,6 +444,7 @@ class _AddProfileByLinkOrContentScreenState
               ),
             ],
           ),
+        ),
         ),
       ),
     );

@@ -26,6 +26,7 @@ import 'package:karing/screens/group_item_options.dart';
 import 'package:karing/screens/group_screen.dart';
 import 'package:karing/screens/hash_string_screen.dart';
 import 'package:karing/screens/theme_config.dart';
+import 'package:karing/screens/theme_define.dart';
 import 'package:karing/screens/webview_helper.dart';
 import 'package:karing/screens/widgets/framework.dart';
 import 'package:path/path.dart' as path;
@@ -61,8 +62,18 @@ class AboutScreenState extends LasyRenderingState<AboutScreen> {
     Size windowSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(gradient: ThemeDefine.kHomeGradient),
+        child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
           child: Column(
@@ -147,6 +158,7 @@ class AboutScreenState extends LasyRenderingState<AboutScreen> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

@@ -91,79 +91,93 @@ class _UWPLoopbackExemptionWindowsScreenState
     final tcontext = Translations.of(context);
     Size windowSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: const SizedBox(
-                        width: 50,
-                        height: 30,
-                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
-                      ),
-                    ),
-                    SizedBox(
-                      width: windowSize.width - 50 - 50 - 50,
-                      child: Text(
-                        tcontext.meta.uwpExemption,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontWeight: ThemeConfig.kFontWeightTitle,
-                          fontSize: ThemeConfig.kFontSizeTitle,
-                        ),
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: ThemeDefine.kHomeGradient,
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: const SizedBox(
                           width: 50,
                           height: 30,
-                          child: Checkbox(
-                            tristate: true,
-                            value: _checkAll ?? false,
-                            onChanged: (bool? value) {
-                              _checkAll = value ?? false;
-                              _checked.clear();
-                              if (_checkAll == true) {
-                                for (var item in _searchedData) {
-                                  _checked.add(item.sid);
-                                }
-                              }
-
-                              setState(() {});
-                            },
+                          child: Icon(Icons.arrow_back_ios_outlined, size: 26),
+                        ),
+                      ),
+                      SizedBox(
+                        width: windowSize.width - 50 - 50 - 50,
+                        child: Text(
+                          tcontext.meta.uwpExemption,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: ThemeConfig.kFontWeightTitle,
+                            fontSize: ThemeConfig.kFontSizeTitle,
                           ),
                         ),
-                        InkWell(
-                          onTap: () async {
-                            onTapDone();
-                          },
-                          child: Tooltip(
-                            message: tcontext.meta.save,
-                            child: const SizedBox(
-                              width: 50,
-                              height: 30,
-                              child: Icon(Icons.done, size: 26),
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 50,
+                            height: 30,
+                            child: Checkbox(
+                              tristate: true,
+                              value: _checkAll ?? false,
+                              onChanged: (bool? value) {
+                                _checkAll = value ?? false;
+                                _checked.clear();
+                                if (_checkAll == true) {
+                                  for (var item in _searchedData) {
+                                    _checked.add(item.sid);
+                                  }
+                                }
+
+                                setState(() {});
+                              },
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          InkWell(
+                            onTap: () async {
+                              onTapDone();
+                            },
+                            child: Tooltip(
+                              message: tcontext.meta.save,
+                              child: const SizedBox(
+                                width: 50,
+                                height: 30,
+                                child: Icon(Icons.done, size: 26),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Expanded(child: _loadListView()),
-            ],
+                const SizedBox(height: 10),
+                Expanded(child: _loadListView()),
+              ],
+            ),
           ),
         ),
       ),

@@ -77,67 +77,113 @@ class _DiversionGroupCustomScreenState
     final tcontext = Translations.of(context);
     Size windowSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: const SizedBox(
-                        width: 50,
-                        height: 30,
-                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
-                      ),
-                    ),
-                    SizedBox(
-                      width: windowSize.width - 50 * 2,
-                      child: Text(
-                        tcontext.meta.diversionCustomGroup,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontWeight: ThemeConfig.kFontWeightTitle,
-                          fontSize: ThemeConfig.kFontSizeTitle,
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: ThemeDefine.kHomeGradient,
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: ThemeDefine.kColorSurfaceVariant
+                                .withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.arrow_back_ios_outlined,
+                            size: 22,
+                            color: ThemeDefine.kColorOnSurface,
+                          ),
                         ),
                       ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        onTapMore();
-                      },
-                      child: Tooltip(
-                        message: tcontext.meta.more,
-                        child: const SizedBox(
-                          width: 50,
-                          height: 30,
-                          child: Icon(Icons.more_vert_outlined, size: 26),
+                      SizedBox(
+                        width: windowSize.width - 50 * 2,
+                        child: Text(
+                          tcontext.meta.diversionCustomGroup,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: ThemeConfig.kFontWeightTitle,
+                            fontSize: ThemeConfig.kFontSizeTitle,
+                            color: ThemeDefine.kColorOnSurface,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: Text(
-                  tcontext.diversionCustomGroupAddTips,
-                  style: const TextStyle(
-                    fontSize: ThemeConfig.kFontSizeListSubItem,
-                    fontWeight: ThemeConfig.kFontWeightListSubItem,
+                      InkWell(
+                        onTap: () {
+                          onTapMore();
+                        },
+                        child: Tooltip(
+                          message: tcontext.meta.more,
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: ThemeDefine.kColorSurfaceVariant
+                                  .withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(
+                              Icons.more_vert_outlined,
+                              size: 26,
+                              color: ThemeDefine.kColorOnSurface,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Expanded(child: _loadListView()),
-            ],
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    tcontext.diversionCustomGroupAddTips,
+                    style: const TextStyle(
+                      fontSize: ThemeConfig.kFontSizeListSubItem,
+                      fontWeight: ThemeConfig.kFontWeightListSubItem,
+                      color: ThemeDefine.kColorOnSurfaceVariant,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: ThemeDefine.kColorSurface.withOpacity(0.5),
+                      borderRadius: ThemeDefine.kBorderRadius,
+                      border: Border.all(
+                        color: ThemeDefine.kColorOutline.withOpacity(0.08),
+                      ),
+                    ),
+                    child: _loadListView(),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

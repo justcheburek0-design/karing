@@ -51,10 +51,14 @@ class _UserAgentSettingsScreenState
     final tcontext = Translations.of(context);
     Size windowSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar(backgroundColor: Colors.transparent, elevation: 0)),
+      body: Container(
+        decoration: const BoxDecoration(gradient: ThemeDefine.kHomeGradient),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
           child: Column(
             children: [
               Padding(
@@ -79,6 +83,7 @@ class _UserAgentSettingsScreenState
                         style: const TextStyle(
                           fontWeight: ThemeConfig.kFontWeightTitle,
                           fontSize: ThemeConfig.kFontSizeTitle,
+                          color: ThemeDefine.kColorOnSurface,
                         ),
                       ),
                     ),
@@ -101,6 +106,7 @@ class _UserAgentSettingsScreenState
           ),
         ),
       ),
+      ),
     );
   }
 
@@ -115,7 +121,7 @@ class _UserAgentSettingsScreenState
           return createWidget(current, windowSize);
         },
         separatorBuilder: (BuildContext context, int index) {
-          return const Divider(height: 1, thickness: 0.3);
+          return Divider(height: 1, thickness: 0.3, color: ThemeDefine.kColorOnSurface.withOpacity(0.08));
         },
       ),
     );
@@ -151,6 +157,7 @@ class _UserAgentSettingsScreenState
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: ThemeConfig.kFontSizeGroupItem,
+                                color: ThemeDefine.kColorOnSurface,
                               ),
                             ),
                           ),
@@ -167,7 +174,7 @@ class _UserAgentSettingsScreenState
                                 child: const Icon(
                                   Icons.remove_circle_outlined,
                                   size: 26,
-                                  color: Colors.red,
+                                  color: ThemeDefine.kColorPrimary,
                                 ),
                               ),
                             ),

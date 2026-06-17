@@ -77,6 +77,7 @@ import 'package:karing/screens/webview_helper.dart';
 import 'package:karing/screens/widgets/fab2.dart';
 import 'package:karing/screens/widgets/framework.dart';
 import 'package:karing/screens/widgets/grid.dart';
+import 'package:karing/screens/widgets/power_button.dart';
 import 'package:karing/screens/widgets/num.dart';
 import 'package:karing/screens/widgets/rotation.dart';
 import 'package:karing/screens/widgets/sheet.dart';
@@ -90,6 +91,7 @@ import 'package:tuple/tuple.dart';
 import 'package:vpn_service/state.dart';
 import 'package:vpn_service/vpn_service.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:karing/screens/theme_define.dart';
 
 class WidgetImportExport {
   List<String> widgets = [];
@@ -2418,19 +2420,36 @@ class _HomeScreenState extends LasyRenderingState<HomeScreen>
     const double convexHeight = 80;
     const double convexIconSize = 50;
     final decoration = getBackgroundDecoration();
+
+    // Separate traffic cards from other cards for the new layout
+    final trafficCards = <GridItem>[];
+    final otherCards = <GridItem>[];
+    for (final w in widgets) {
+      final id = w.id;
+      if (id == TrafficSpeedInfoCard.id() ||
+          id == TrafficTotalInfoCard.id() ||
+          id == TrafficProxyInfoCard.id() ||
+          id == ProfileSubTrafficInfoCard.id()) {
+        trafficCards.add(w);
+      } else {
+        otherCards.add(w);
+      }
+    }
+
     return Focus(
       onKeyEvent: onKeyEvent,
       canRequestFocus: false,
       skipTraversal: true,
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.zero,
+          preferredSize: const Size.fromHeight(60),
           child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
             systemOverlayStyle: SystemUiOverlayStyle(
               systemNavigationBarIconBrightness: decoration == null
                   ? themes.getStatusBarIconBrightness(context)
-                  : Brightness
-                        .light, //must be light if has decoration, or transparent does not work if light theme on android
+                  : Brightness.light,
               systemNavigationBarColor: decoration == null
                   ? color
                   : Colors.transparent,
@@ -2442,6 +2461,140 @@ class _HomeScreenState extends LasyRenderingState<HomeScreen>
               ),
               systemStatusBarContrastEnforced: true,
             ),
+            title: Row(
+              children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: ThemeDefine.kColorPrimary.withOpacity(0.15),
+                  ),
+                  child: Icon(
+                    Icons.shield_outlined,
+                    size: 20,
+                    color: ThemeDefine.kColorPrimary,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Karing',
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: theme.colorScheme.onSurface,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              if (!_edit) ...[
+                Tooltip(
+                  message: tcontext.meta.setting,
+                  child: InkWell(
+                    onTap: () async {
+                      onTapSetting();
+                    },
+                    child: Stack(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          margin: const EdgeInsets.only(right: 8),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: theme.colorScheme.surfaceContainerHighest
+                                .withOpacity(0.5),
+                          ),
+                          child: const Icon(
+                            Icons.settings_outlined,
+                            size: 22,
+                          ),
+                        ),
+                        if (checkVersion.newVersion ||
+                            noticeItem != null) ...[
+                          Positioned(
+                            right: 6,
+                            top: 2,
+                            child: Container(
+                              width: 10,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.error,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: theme.colorScheme.surface,
+                                  width: 2,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+              if (_edit) ...[
+                Tooltip(
+                  message: tcontext.meta.add,
+                  child: InkWell(
+                    onTap: () async {
+                      onTapAddWidget(context);
+                    },
+                    child: const SizedBox(
+                      width: 50,
+                      height: 30,
+                      child: Icon(Icons.add, size: 26),
+                    ),
+                  ),
+                ),
+                Tooltip(
+                  message: tcontext.meta.import,
+                  child: InkWell(
+                    onTap: () async {
+                      onTapWidgetImport(context);
+                    },
+                    child: const SizedBox(
+                      width: 50,
+                      height: 30,
+                      child: Icon(AntDesign.import_outline, size: 26),
+                    ),
+                  ),
+                ),
+                Tooltip(
+                  message: tcontext.meta.export,
+                  child: InkWell(
+                    onTap: () async {
+                      onTapWidgetExport(context);
+                    },
+                    child: const SizedBox(
+                      width: 50,
+                      height: 30,
+                      child: Icon(AntDesign.export_outline, size: 26),
+                    ),
+                  ),
+                ),
+              ],
+              Tooltip(
+                message: _edit
+                    ? tcontext.meta.save
+                    : tcontext.meta.edit,
+                child: InkWell(
+                  focusNode: _focusNodeEdit,
+                  onTap: () async {
+                    onTapEditWidget();
+                  },
+                  child: SizedBox(
+                    width: 50,
+                    height: 30,
+                    child: Icon(
+                      _edit ? Icons.done_outlined : Icons.edit_outlined,
+                      size: 26,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         body: Container(
@@ -2449,247 +2602,143 @@ class _HomeScreenState extends LasyRenderingState<HomeScreen>
           height: double.infinity,
           decoration: decoration,
           child: SafeArea(
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      if (!_edit) ...[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Tooltip(
-                              message: tcontext.meta.setting,
-                              child: InkWell(
-                                //autofocus: settingConfig.ui.tvMode,
-                                //focusNode: _focusNodeSettings,
-                                onTap: () async {
-                                  onTapSetting();
-                                },
-                                child: Stack(
-                                  children: [
-                                    const SizedBox(
-                                      width: 50,
-                                      height: 30,
-                                      child: Icon(
-                                        Icons.settings_outlined,
-                                        size: 26,
-                                      ),
-                                    ),
-                                    if (checkVersion.newVersion ||
-                                        noticeItem != null) ...[
-                                      Positioned(
-                                        left: 10,
-                                        top: 0,
-                                        child: Container(
-                                          width: 8,
-                                          height: 8,
-                                          decoration: const BoxDecoration(
-                                            color: Colors.red,
-                                            shape: BoxShape.circle,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                      if (_edit) ...[
-                        Tooltip(
-                          message: tcontext.meta.add,
-                          child: InkWell(
-                            onTap: () async {
-                              onTapAddWidget(context);
-                            },
-                            child: const SizedBox(
-                              width: 50,
-                              height: 30,
-                              child: Icon(Icons.add, size: 26),
-                            ),
-                          ),
-                        ),
-                        Tooltip(
-                          message: tcontext.meta.import,
-                          child: InkWell(
-                            onTap: () async {
-                              onTapWidgetImport(context);
-                            },
-                            child: const SizedBox(
-                              width: 50,
-                              height: 30,
-                              child: Icon(AntDesign.import_outline, size: 26),
-                            ),
-                          ),
-                        ),
-                        Tooltip(
-                          message: tcontext.meta.export,
-                          child: InkWell(
-                            onTap: () async {
-                              onTapWidgetExport(context);
-                            },
-                            child: const SizedBox(
-                              width: 50,
-                              height: 30,
-                              child: Icon(AntDesign.export_outline, size: 26),
-                            ),
-                          ),
-                        ),
-                      ],
-                      Tooltip(
-                        message: _edit
-                            ? tcontext.meta.save
-                            : tcontext.meta.edit,
-                        child: InkWell(
-                          focusNode: _focusNodeEdit,
-                          onTap: () async {
-                            onTapEditWidget();
-                          },
-                          child: SizedBox(
-                            width: 50,
-                            height: 30,
-                            child: Icon(
-                              _edit ? Icons.done_outlined : Icons.edit_outlined,
-                              size: 26,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-                Expanded(
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        right: 0,
-                        bottom: (_edit ? 0 : 60),
-                        child: SingleChildScrollView(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-                          controller: _scrollController,
-                          child: Column(
-                            children: [
-                              _edit
-                                  ? SuperGrid(
-                                      key: _superGridKey,
-                                      crossAxisCount: columns,
-                                      crossAxisSpacing: spacing,
-                                      mainAxisSpacing: spacing,
-                                      onUpdate: () {},
-                                      deleteOnTap: settingConfig.ui.tvMode,
-                                      children: widgets,
-                                    )
-                                  : Grid(
-                                      key: _superGridKey,
-                                      crossAxisCount: columns,
-                                      crossAxisSpacing: spacing,
-                                      mainAxisSpacing: spacing,
-                                      children: widgets,
-                                    ),
-                              if (!_edit) ...[SizedBox(height: convexIconSize)],
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: Column(
-                          children: [
-                            if (!_edit) ...[
-                              ConvexButton2.fab2(
-                                thickness: 60,
-                                top: 60,
-                                size: convexHeight,
-                                color:
-                                    _state == FlutterVpnServiceState.connected
-                                    ? Colors.green
-                                    : Colors.red,
-                                backgroundColor: theme
-                                    .colorScheme
-                                    .surfaceContainerLow
-                                    .withAlpha(alpha),
-                                thicknessChild: ServerSelectCard(
-                                  server: _currentServer,
-                                  serverUrltest: _currentServerForUrltest,
-                                  onTap: () async {
-                                    await onTapServerSelect();
-                                  },
-                                ),
-                                child: SizedBox(
-                                  height: convexIconSize,
-                                  width: convexIconSize,
-                                  child: Tooltip(
-                                    message: stateTooltip,
-                                    child: Semantics(
-                                      label: stateTooltip,
-                                      button: true,
-                                      enabled: !working,
-                                      toggled:
-                                          _state ==
-                                          FlutterVpnServiceState.connected,
-                                      child: IconButton(
-                                        tooltip: stateTooltip,
-                                        focusNode: _focusNodeSwitch,
-                                        iconSize: 32,
-                                        onPressed: working
-                                            ? null
-                                            : () async {
-                                                _working = true;
-                                                await onTapToggle("switch");
-                                                _working = false;
-                                                setState(() {});
-                                              },
-                                        icon: working
-                                            ? RepaintBoundary(
-                                                child: Rotation(
-                                                  child: Icon(
-                                                    CupertinoIcons
-                                                        .checkmark_shield,
-                                                    color: Colors.red,
-                                                  ),
-                                                ),
-                                              )
-                                            : Icon(
-                                                _state ==
-                                                        FlutterVpnServiceState
-                                                            .connected
-                                                    ? CupertinoIcons
-                                                          .checkmark_shield
-                                                    : CupertinoIcons
-                                                          .xmark_shield,
-                                                color:
-                                                    _state ==
-                                                        FlutterVpnServiceState
-                                                            .connected
-                                                    ? Colors.green
-                                                    : Colors.red,
-                                              ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            child: _edit
+                ? _buildEditLayout(otherCards, trafficCards, columns, spacing,
+                    settingConfig, theme)
+                : _buildMainLayout(otherCards, trafficCards, columns, spacing,
+                    settingConfig, theme),
           ),
         ),
+      ),
+    );
+  }
+
+  /// Main layout in Max Speed VPN style:
+  /// - Traffic cards row at top
+  /// - Large PowerButton in center
+  /// - ServerSelectCard below button
+  /// - Other widget cards in grid at bottom
+  Widget _buildMainLayout(
+    List<GridItem> otherCards,
+    List<GridItem> trafficCards,
+    int columns,
+    double spacing,
+    dynamic settingConfig,
+    ThemeData theme,
+  ) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+      controller: _scrollController,
+      child: Column(
+        children: [
+          // Traffic cards row (up/down speed, total, etc.)
+          if (trafficCards.isNotEmpty) ...[
+            _buildTrafficRow(trafficCards),
+            const SizedBox(height: 16),
+          ],
+
+          // Large PowerButton in center
+          Center(
+            child: PowerButton(
+              state: _state,
+              onPressed: () async {
+                if (_working) return;
+                _working = true;
+                await onTapToggle("switch");
+                _working = false;
+                setState(() {});
+              },
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Server select card
+          ServerSelectCard(
+            server: _currentServer,
+            serverUrltest: _currentServerForUrltest,
+            onTap: () async {
+              await onTapServerSelect();
+            },
+          ),
+          const SizedBox(height: 16),
+
+          // Other widget cards in grid
+          if (otherCards.isNotEmpty)
+            Grid(
+              key: _superGridKey,
+              crossAxisCount: columns,
+              crossAxisSpacing: spacing,
+              mainAxisSpacing: spacing,
+              children: otherCards,
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// Traffic cards displayed in a horizontal row at top
+  Widget _buildTrafficRow(List<GridItem> trafficCards) {
+    if (trafficCards.length == 1) {
+      return trafficCards.first;
+    }
+    if (trafficCards.length == 2) {
+      return Row(
+        children: [
+          Expanded(child: trafficCards[0]),
+          const SizedBox(width: 12),
+          Expanded(child: trafficCards[1]),
+        ],
+      );
+    }
+    // 3+ cards: first two in row, rest below
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(child: trafficCards[0]),
+            const SizedBox(width: 12),
+            Expanded(child: trafficCards[1]),
+          ],
+        ),
+        if (trafficCards.length > 2) ...[
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(child: trafficCards[2]),
+              if (trafficCards.length > 3) ...[
+                const SizedBox(width: 12),
+                Expanded(child: trafficCards[3]),
+              ] else ...[
+                const Expanded(child: SizedBox()),
+              ],
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+
+  /// Edit mode layout — same as original but with new app bar
+  Widget _buildEditLayout(
+    List<GridItem> otherCards,
+    List<GridItem> trafficCards,
+    int columns,
+    double spacing,
+    dynamic settingConfig,
+    ThemeData theme,
+  ) {
+    final allWidgets = [...trafficCards, ...otherCards];
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+      controller: _scrollController,
+      child: SuperGrid(
+        key: _superGridKey,
+        crossAxisCount: columns,
+        crossAxisSpacing: spacing,
+        mainAxisSpacing: spacing,
+        onUpdate: () {},
+        deleteOnTap: settingConfig.ui.tvMode,
+        children: allWidgets,
       ),
     );
   }

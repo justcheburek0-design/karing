@@ -57,74 +57,75 @@ class _QrcodeScanScreenState extends LasyRenderingState<QrcodeScanScreen> {
         }
       },
       child: Scaffold(
-        appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: const SizedBox(
-                        width: 50,
-                        height: 30,
-                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
-                      ),
-                    ),
-                    SizedBox(
-                      width: windowSize.width - 50 * 2,
-                      child: Text(
-                        tcontext.meta.qrcodeScan,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontWeight: ThemeConfig.kFontWeightTitle,
-                          fontSize: ThemeConfig.kFontSizeTitle,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 50,
-                      height: 30,
-                      child: IconButton(
-                        icon: FutureBuilder(
-                          future: getFlashState(),
-                          builder:
-                              (
-                                BuildContext context,
-                                AsyncSnapshot<bool> snapshot,
-                              ) {
-                                return snapshot.hasData && snapshot.data!
-                                    ? const Icon(
-                                        Icons.flash_on_outlined,
-                                        color: ThemeDefine.kColorBlue,
-                                      )
-                                    : const Icon(Icons.flash_off_outlined);
-                              },
-                        ),
-                        iconSize: 26,
-                        onPressed: () async {
-                          try {
-                            await controller?.toggleFlash();
-                          } catch (err) {
-                            DialogUtils.showAlertDialog(
-                              context,
-                              err.toString(),
-                              showCopy: true,
-                              showFAQ: true,
-                              withVersion: true,
-                            );
-                          }
-
-                          setState(() {});
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+        backgroundColor: ThemeDefine.kColorBgPrimary,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: InkWell(
+              onTap: () => Navigator.pop(context),
+              child: const Icon(Icons.arrow_back_ios_outlined, size: 24),
+            ),
+            title: Text(
+              tcontext.meta.qrcodeScan,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontWeight: ThemeConfig.kFontWeightTitle,
+                fontSize: ThemeConfig.kFontSizeTitle,
+                color: ThemeDefine.kColorOnSurface,
+              ),
+            ),
+            centerTitle: true,
+            actions: [
+              FutureBuilder(
+                future: getFlashState(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                  return IconButton(
+                    icon: snapshot.hasData && snapshot.data!
+                        ? const Icon(Icons.flash_on_outlined,
+                            color: ThemeDefine.kColorBlue)
+                        : const Icon(Icons.flash_off_outlined),
+                    iconSize: 24,
+                    color: ThemeDefine.kColorOnSurface,
+                    onPressed: () async {
+                      try {
+                        await controller?.toggleFlash();
+                      } catch (err) {
+                        DialogUtils.showAlertDialog(
+                          context,
+                          err.toString(),
+                          showCopy: true,
+                          showFAQ: true,
+                          withVersion: true,
+                        );
+                      }
+                      setState(() {});
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                ThemeDefine.kColorBgPrimary,
+                ThemeDefine.kColorBgSecondary,
+              ],
+            ),
+          ),
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+              child: Column(
+                children: [
                 const SizedBox(height: 10),
                 SizedBox(
                   width: windowSize.width,

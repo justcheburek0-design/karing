@@ -44,9 +44,16 @@ class _ServerSelectKeywordsScreenState
   Widget build(BuildContext context) {
     final tcontext = Translations.of(context);
     Size windowSize = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
+    return Container(
+      decoration: BoxDecoration(gradient: ThemeDefine.kHomeGradient),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        extendBodyBehindAppBar: true,
+        appBar: PreferredSize(
+          preferredSize: Size.zero,
+          child: AppBar(backgroundColor: Colors.transparent, elevation: 0),
+        ),
+        body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
           child: Column(
@@ -73,6 +80,7 @@ class _ServerSelectKeywordsScreenState
                         style: const TextStyle(
                           fontWeight: ThemeConfig.kFontWeightTitle,
                           fontSize: ThemeConfig.kFontSizeTitle,
+                          color: ThemeDefine.kColorOnSurface,
                         ),
                       ),
                     ),
@@ -95,6 +103,7 @@ class _ServerSelectKeywordsScreenState
           ),
         ),
       ),
+      ),
     );
   }
 
@@ -109,7 +118,7 @@ class _ServerSelectKeywordsScreenState
           return createWidget(index, current, windowSize);
         },
         separatorBuilder: (BuildContext context, int index) {
-          return const Divider(height: 1, thickness: 0.3);
+          return Divider(height: 1, thickness: 0.3, color: ThemeDefine.kColorOnSurface.withOpacity(0.08));
         },
       ),
     );

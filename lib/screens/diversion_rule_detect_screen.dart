@@ -13,6 +13,7 @@ import 'package:karing/app/utils/singbox_config_builder.dart';
 import 'package:karing/i18n/strings.g.dart';
 import 'package:karing/screens/dialog_utils.dart';
 import 'package:karing/screens/theme_config.dart';
+import 'package:karing/screens/theme_define.dart';
 import 'package:karing/screens/widgets/framework.dart';
 import 'package:karing/screens/widgets/text_field.dart';
 import 'package:tuple/tuple.dart';
@@ -120,45 +121,71 @@ class _DiversionRuleDetectScreenState
     final tcontext = Translations.of(context);
     Size windowSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: const SizedBox(
-                      width: 50,
-                      height: 30,
-                      child: Icon(Icons.arrow_back_ios_outlined, size: 26),
-                    ),
-                  ),
-                  SizedBox(
-                    width: windowSize.width - 50 * 2,
-                    child: Text(
-                      tcontext.DiversionRuleDetectScreen.title,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: ThemeConfig.kFontWeightTitle,
-                        fontSize: ThemeConfig.kFontSizeTitle,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 50),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(18, 10, 18, 10),
-                  child: Column(
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: ThemeDefine.kHomeGradient,
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      TextFieldEx(
+                      InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: ThemeDefine.kColorSurfaceVariant
+                                .withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.arrow_back_ios_outlined,
+                            size: 22,
+                            color: ThemeDefine.kColorOnSurface,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: windowSize.width - 50 * 2,
+                        child: Text(
+                          tcontext.DiversionRuleDetectScreen.title,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: ThemeConfig.kFontWeightTitle,
+                            fontSize: ThemeConfig.kFontSizeTitle,
+                            color: ThemeDefine.kColorOnSurface,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 40),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(18, 10, 18, 10),
+                    child: Column(
+                      children: [
+                        TextFieldEx(
                         controller: _textControllerHost,
                         textInputAction: TextInputAction.done,
                         decoration: const InputDecoration(
@@ -295,9 +322,11 @@ class _DiversionRuleDetectScreenState
                                       ),
                                     );
                                     widgets.add(const SizedBox(height: 10));
-                                    widgets.add(
-                                      const Divider(height: 1, thickness: 0.3),
-                                    );
+                                    widgets.add(Divider(
+                                      height: 1,
+                                      thickness: 0.3,
+                                      color: ThemeDefine.kColorOnSurface.withOpacity(0.08),
+                                    ));
                                   });
                                   fetchErr.forEach((key, value) {
                                     widgets.add(

@@ -55,10 +55,20 @@ class _VersionUpdateScreenState
     var checkVersion = AutoUpdateManager.getVersionCheck();
 
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: Stack(
-        children: [
-          Container(
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(gradient: ThemeDefine.kHomeGradient),
+        child: Stack(
+          children: [
+            Container(
             margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
             alignment: Alignment.center,
             child: Column(
@@ -115,6 +125,7 @@ class _VersionUpdateScreenState
             ),
           ),
         ],
+      ),
       ),
     );
   }

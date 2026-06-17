@@ -12,6 +12,7 @@ import 'package:karing/app/utils/windows_version_helper.dart';
 import 'package:karing/i18n/strings.g.dart';
 import 'package:karing/screens/dialog_utils.dart';
 import 'package:karing/screens/theme_config.dart';
+import 'package:karing/screens/theme_define.dart';
 import 'package:karing/screens/widgets/framework.dart';
 import 'package:karing/screens/widgets/sheet.dart';
 import 'package:path/path.dart' as path;
@@ -116,166 +117,180 @@ class FileContentViewerScreenState
     final tcontext = Translations.of(context);
     Size windowSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: const SizedBox(
-                      width: 50,
-                      height: 30,
-                      child: Icon(Icons.arrow_back_ios_outlined, size: 26),
-                    ),
-                  ),
-                  SizedBox(
-                    width: windowSize.width - 50 * 2,
-                    child: Text(
-                      tcontext.FileContentViewerScreen.title,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: ThemeConfig.kFontWeightTitle,
-                        fontSize: ThemeConfig.kFontSizeTitle,
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: ThemeDefine.kHomeGradient,
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: const SizedBox(
+                        width: 50,
+                        height: 30,
+                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
                       ),
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    SizedBox(
+                      width: windowSize.width - 50 * 2,
+                      child: Text(
+                        tcontext.FileContentViewerScreen.title,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: ThemeConfig.kFontWeightTitle,
+                          fontSize: ThemeConfig.kFontSizeTitle,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                          onTap: () async {
+                            onTapMore();
+                          },
+                          child: Tooltip(
+                            message: tcontext.meta.more,
+                            child: const SizedBox(
+                              width: 50,
+                              height: 30,
+                              child: Icon(Icons.more_vert_outlined, size: 30),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Row(
                     children: [
+                      SizedBox(
+                        width: 200,
+                        child: DropdownButton(
+                          hint: Text(_tip),
+                          value: _fileName,
+                          style: TextStyle(
+                            fontSize: ThemeConfig.kFontSizeGroupItem,
+                            color: Theme.of(context).textTheme.bodyMedium?.color,
+                          ),
+                          items: _buildDropButtonList(getFileList()),
+                          onChanged: (String? sel) async {
+                            _fileName = sel ?? getFileList().first;
+                            jumpToTop();
+                            String filePath = await PathUtils.profileDir();
+                            if (!mounted) {
+                              return;
+                            }
+                            filePath = path.join(filePath, _fileName);
+                            var file = File(filePath);
+                            if (await file.exists()) {
+                              _fileSize =
+                                  ProxyConfUtils.convertTrafficToStringDouble(
+                                    await file.length(),
+                                  );
+                            } else {
+                              _fileSize = "";
+                            }
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 10),
                       InkWell(
                         onTap: () async {
-                          onTapMore();
+                          jumpToTop();
                         },
-                        child: Tooltip(
-                          message: tcontext.meta.more,
-                          child: const SizedBox(
-                            width: 50,
-                            height: 30,
-                            child: Icon(Icons.more_vert_outlined, size: 30),
-                          ),
+                        child: const SizedBox(
+                          width: 30,
+                          height: 30,
+                          child: Icon(Icons.arrow_upward_outlined, size: 30),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      InkWell(
+                        onTap: () async {
+                          jumpToBottom();
+                        },
+                        child: const SizedBox(
+                          width: 30,
+                          height: 30,
+                          child: Icon(Icons.arrow_downward_outlined, size: 30),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        _fileSize,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
                         ),
                       ),
                     ],
                   ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 200,
-                      child: DropdownButton(
-                        hint: Text(_tip),
-                        value: _fileName,
-                        style: TextStyle(
-                          fontSize: ThemeConfig.kFontSizeGroupItem,
-                          color: Theme.of(context).textTheme.bodyMedium?.color,
-                        ),
-                        items: _buildDropButtonList(getFileList()),
-                        onChanged: (String? sel) async {
-                          _fileName = sel ?? getFileList().first;
-                          jumpToTop();
-                          String filePath = await PathUtils.profileDir();
-                          if (!mounted) {
-                            return;
-                          }
-                          filePath = path.join(filePath, _fileName);
-                          var file = File(filePath);
-                          if (await file.exists()) {
-                            _fileSize =
-                                ProxyConfUtils.convertTrafficToStringDouble(
-                                  await file.length(),
-                                );
-                          } else {
-                            _fileSize = "";
-                          }
-                          setState(() {});
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    InkWell(
-                      onTap: () async {
-                        jumpToTop();
-                      },
-                      child: const SizedBox(
-                        width: 30,
-                        height: 30,
-                        child: Icon(Icons.arrow_upward_outlined, size: 30),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    InkWell(
-                      onTap: () async {
-                        jumpToBottom();
-                      },
-                      child: const SizedBox(
-                        width: 30,
-                        height: 30,
-                        child: Icon(Icons.arrow_downward_outlined, size: 30),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      _fileSize,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Theme.of(context).textTheme.bodyMedium?.color,
-                      ),
-                    ),
-                  ],
                 ),
-              ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      child: FutureBuilder(
-                        future: loadContent(),
-                        builder:
-                            (
-                              BuildContext context,
-                              AsyncSnapshot<String> snapshot,
-                            ) {
-                              _editController.value = _editController.value
-                                  .copyWith(
-                                    text: snapshot.hasData
-                                        ? snapshot.data!
-                                        : "",
-                                  );
-                              return SizedBox(
-                                height: PlatformUtils.isPC()
-                                    ? windowSize.height - 120
-                                    : windowSize.height - 180,
-                                child: TextField(
-                                  readOnly: true,
-                                  expands: true,
-                                  maxLines: null,
-                                  minLines: null,
-                                  controller: _editController,
-                                  scrollController: _scrollController,
-                                  style: TextStyle(
-                                    fontSize: ThemeConfig.kFontSizeGroupItem,
+                const SizedBox(height: 10),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: FutureBuilder(
+                          future: loadContent(),
+                          builder:
+                              (
+                                BuildContext context,
+                                AsyncSnapshot<String> snapshot,
+                              ) {
+                                _editController.value = _editController.value
+                                    .copyWith(
+                                      text: snapshot.hasData
+                                          ? snapshot.data!
+                                          : "",
+                                    );
+                                return SizedBox(
+                                  height: PlatformUtils.isPC()
+                                      ? windowSize.height - 120
+                                      : windowSize.height - 180,
+                                  child: TextField(
+                                    readOnly: true,
+                                    expands: true,
+                                    maxLines: null,
+                                    minLines: null,
+                                    controller: _editController,
+                                    scrollController: _scrollController,
+                                    style: TextStyle(
+                                      fontSize: ThemeConfig.kFontSizeGroupItem,
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

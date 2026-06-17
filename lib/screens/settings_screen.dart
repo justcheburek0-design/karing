@@ -110,72 +110,200 @@ class _SettingScreenState extends LasyRenderingState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final tcontext = Translations.of(context);
-    Size windowSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: const SizedBox(
-                        width: 50,
-                        height: 30,
-                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
-                      ),
-                    ),
-                    SizedBox(
-                      width: windowSize.width - 50 * 2,
-                      child: Text(
-                        tcontext.meta.setting,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontWeight: ThemeConfig.kFontWeightTitle,
-                          fontSize: ThemeConfig.kFontSizeTitle,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 50),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: Scrollbar(
-                  thumbVisibility: true,
-                  child: SingleChildScrollView(
-                    child: FutureBuilder(
-                      future: getGroupOptionsWithTryCatch(),
-                      builder:
-                          (
-                            BuildContext context,
-                            AsyncSnapshot<List<GroupItem>> snapshot,
-                          ) {
-                            List<GroupItem> data = snapshot.hasData
-                                ? snapshot.data!
-                                : [];
-                            List<Widget> children = [];
-
-                            children.addAll(
-                              GroupItemCreator.createGroups(context, data),
-                            );
-                            return Column(children: children);
-                          },
-                    ),
-                  ),
-                ),
-              ),
+      backgroundColor: ThemeDefine.kColorBgPrimary,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: InkWell(
+            onTap: () => Navigator.pop(context),
+            child: const Icon(Icons.arrow_back_ios_outlined, size: 24),
+          ),
+          title: Text(
+            tcontext.meta.setting,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontWeight: ThemeConfig.kFontWeightTitle,
+              fontSize: ThemeConfig.kFontSizeTitle,
+              color: ThemeDefine.kColorOnSurface,
+            ),
+          ),
+          centerTitle: true,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              ThemeDefine.kColorBgPrimary,
+              ThemeDefine.kColorBgSecondary,
             ],
           ),
         ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+            child: Scrollbar(
+              thumbVisibility: true,
+              child: SingleChildScrollView(
+                child: FutureBuilder(
+                  future: getGroupOptionsWithTryCatch(),
+                  builder:
+                      (
+                        BuildContext context,
+                        AsyncSnapshot<List<GroupItem>> snapshot,
+                      ) {
+                    List<GroupItem> data = snapshot.hasData
+                        ? snapshot.data!
+                        : [];
+                    List<Widget> children = [];
+
+                    children.addAll(
+                      _createMaxSpeedGroups(context, data),
+                    );
+                    return Column(children: children);
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _createMaxSpeedGroups(
+    BuildContext context,
+    List<GroupItem> groups,
+  ) {
+    List<Widget> widgets = [];
+    for (var group in groups) {
+      widgets.add(
+        Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            color: ThemeDefine.kColorSurface.withOpacity(0.6),
+            borderRadius: ThemeDefine.kBorderRadius,
+            border: Border.all(
+              color: ThemeDefine.kColorOutline.withOpacity(0.08),
+              width: 1,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (group.name != null && group.name!.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    child: Text(
+                      group.name!,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: ThemeDefine.kColorOnSurface,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ..._buildGroupItems(context, group),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+    return widgets;
+  }
+
+  List<Widget> _buildGroupItems(BuildContext context, GroupItem group) {
+    List<Widget> items = [];
+    for (int i = 0; i < group.options.length; i++) {
+      final option = group.options[i];
+      late Widget widget;
+      if (option.textOptions != null) {
+        widget = _buildMaxSpeedItem(
+          GroupItemText(options: option.textOptions!),
+        );
+      } else if (option.textFormFieldOptions != null) {
+        widget = _buildMaxSpeedItem(
+          GroupItemTextField(options: option.textFormFieldOptions!),
+        );
+      } else if (option.switchOptions != null) {
+        widget = _buildMaxSpeedSwitchItem(
+          GroupItemSwitch(options: option.switchOptions!),
+        );
+      } else if (option.pushOptions != null) {
+        widget = _buildMaxSpeedItem(
+          GroupItemPush(options: option.pushOptions!),
+        );
+      } else if (option.timerIntervalPickerOptions != null) {
+        widget = _buildMaxSpeedItem(
+          GroupItemTimerIntervalPicker(
+            options: option.timerIntervalPickerOptions!,
+          ),
+        );
+      } else if (option.dateTimePeriodPickerOptions != null) {
+        widget = _buildMaxSpeedItem(
+          GroupItemDateTimeDurationPicker(
+            options: option.dateTimePeriodPickerOptions!,
+          ),
+        );
+      } else if (option.stringPickerOptions != null) {
+        widget = _buildMaxSpeedItem(
+          GroupItemStringPicker(options: option.stringPickerOptions!),
+        );
+      } else {
+        continue;
+      }
+      items.add(widget);
+      if (i < group.options.length - 1) {
+        items.add(
+          Divider(
+            height: 1,
+            thickness: 0.5,
+            color: ThemeDefine.kColorOnSurface.withOpacity(0.08),
+            indent: 16,
+            endIndent: 16,
+          ),
+        );
+      }
+    }
+    return items;
+  }
+
+  Widget _buildMaxSpeedItem(Widget child) {
+    return SizedBox(
+      height: ThemeConfig.kGroupItemHeight,
+      child: child,
+    );
+  }
+
+  Widget _buildMaxSpeedSwitchItem(GroupItemSwitch child) {
+    return SizedBox(
+      height: ThemeConfig.kGroupItemHeight,
+      child: Theme(
+        data: ThemeData(
+          switchTheme: SwitchThemeData(
+            thumbColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.selected)) {
+                return ThemeDefine.kColorPrimary;
+              }
+              return ThemeDefine.kColorOutline;
+            }),
+            trackColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.selected)) {
+                return ThemeDefine.kColorPrimary.withOpacity(0.3);
+              }
+              return ThemeDefine.kColorSurfaceVariant;
+            }),
+          ),
+        ),
+        child: child,
       ),
     );
   }

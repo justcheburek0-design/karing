@@ -57,6 +57,7 @@ import 'package:karing/screens/region_settings_screen.dart';
 import 'package:karing/screens/server_select_screen.dart';
 import 'package:karing/screens/statistics_records_screen.dart';
 import 'package:karing/screens/theme_config.dart';
+import 'package:karing/screens/theme_define.dart';
 import 'package:karing/screens/urltest_group_custom_screen.dart';
 import 'package:karing/screens/webview_helper.dart';
 import 'package:path/path.dart' as path;
@@ -1803,7 +1804,7 @@ class GroupHelper {
               text: frontProxy,
               textStyle: TextStyle(
                 fontFamily: Platform.isWindows ? 'Emoji' : null,
-                color: invalidOutbounds.isNotEmpty ? Colors.red : null,
+                color: invalidOutbounds.isNotEmpty ? ThemeDefine.kColorPrimary : null,
               ),
               onPush: () async {
                 String oldData = settingConfig.frontProxy.join(",");

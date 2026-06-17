@@ -20,6 +20,7 @@ import 'package:karing/i18n/strings.g.dart';
 import 'package:karing/screens/dialog_utils.dart';
 import 'package:karing/screens/listview_multi_parts_builder.dart';
 import 'package:karing/screens/theme_config.dart';
+import 'package:karing/screens/theme_define.dart';
 import 'package:karing/screens/widgets/framework.dart';
 import 'package:karing/screens/widgets/text_field.dart';
 import 'package:tuple/tuple.dart';
@@ -831,89 +832,103 @@ class _NetCheckScreenState extends LasyRenderingState<NetCheckScreen> {
     final tcontext = Translations.of(context);
     Size windowSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: const SizedBox(
-                      width: 50,
-                      height: 30,
-                      child: Icon(Icons.arrow_back_ios_outlined, size: 26),
-                    ),
-                  ),
-                  SizedBox(
-                    width: windowSize.width - 50 * 3 - 26,
-                    child: Text(
-                      tcontext.NetCheckScreen.title,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: ThemeConfig.kFontWeightTitle,
-                        fontSize: ThemeConfig.kFontSizeTitle,
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: ThemeDefine.kHomeGradient,
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: const SizedBox(
+                        width: 50,
+                        height: 30,
+                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
                       ),
                     ),
-                  ),
-                  _checking
-                      ? const SizedBox(width: 50, height: 30)
-                      : InkWell(
-                          onTap: () async {
-                            List<NetCheckItem?> checks = [
-                              _netCheckItemConnectivity,
-                              _netCheckItemRemoteRulesets,
-                              _netCheckItemOutboundDNSQuery,
-                              _netCheckItemOutbound,
-                              _netCheckItemNonOutboundDNSQuery,
-                              _netCheckItemDomainDNSQuery,
-                              _netCheckItemHostConnectivity,
-                              if (!Platform.isIOS) ...[_netCheckItemRouteTable],
-                            ];
-                            String result = "";
-                            for (var check in checks) {
-                              if (check == null) {
-                                continue;
-                              }
-                              result += "${check.name}:\n";
-                              for (var item in check.values) {
-                                ReturnResult<String> checkResult = item;
-                                if (checkResult.error == null) {
-                                  result += "  - ${checkResult.data}\n";
-                                } else {
-                                  result +=
-                                      "  - ${checkResult.error!.message}\n";
-                                }
-                                result += "\n";
-                              }
-                            }
-                            try {
-                              await Clipboard.setData(
-                                ClipboardData(
-                                  text: [
-                                    "Domain: $_domain",
-                                    "OS: ${Platform.operatingSystem}",
-                                    result,
-                                  ].join('\n\n'),
-                                ),
-                              );
-                            } catch (e) {}
-                          },
-                          child: SizedBox(
-                            width: 50,
-                            height: 30,
-                            child: Icon(Icons.copy, size: 26),
-                          ),
+                    SizedBox(
+                      width: windowSize.width - 50 * 3 - 26,
+                      child: Text(
+                        tcontext.NetCheckScreen.title,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: ThemeConfig.kFontWeightTitle,
+                          fontSize: ThemeConfig.kFontSizeTitle,
                         ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Expanded(child: ListViewMultiPartsBuilder.build(_listViewParts)),
-            ],
+                      ),
+                    ),
+                    _checking
+                        ? const SizedBox(width: 50, height: 30)
+                        : InkWell(
+                            onTap: () async {
+                              List<NetCheckItem?> checks = [
+                                _netCheckItemConnectivity,
+                                _netCheckItemRemoteRulesets,
+                                _netCheckItemOutboundDNSQuery,
+                                _netCheckItemOutbound,
+                                _netCheckItemNonOutboundDNSQuery,
+                                _netCheckItemDomainDNSQuery,
+                                _netCheckItemHostConnectivity,
+                                if (!Platform.isIOS) ...[_netCheckItemRouteTable],
+                              ];
+                              String result = "";
+                              for (var check in checks) {
+                                if (check == null) {
+                                  continue;
+                                }
+                                result += "${check.name}:\n";
+                                for (var item in check.values) {
+                                  ReturnResult<String> checkResult = item;
+                                  if (checkResult.error == null) {
+                                    result += "  - ${checkResult.data}\n";
+                                  } else {
+                                    result +=
+                                        "  - ${checkResult.error!.message}\n";
+                                  }
+                                  result += "\n";
+                                }
+                              }
+                              try {
+                                await Clipboard.setData(
+                                  ClipboardData(
+                                    text: [
+                                      "Domain: $_domain",
+                                      "OS: ${Platform.operatingSystem}",
+                                      result,
+                                    ].join('\n\n'),
+                                  ),
+                                );
+                              } catch (e) {}
+                            },
+                            child: SizedBox(
+                              width: 50,
+                              height: 30,
+                              child: Icon(Icons.copy, size: 26),
+                            ),
+                          ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Expanded(child: ListViewMultiPartsBuilder.build(_listViewParts)),
+              ],
+            ),
           ),
         ),
       ),

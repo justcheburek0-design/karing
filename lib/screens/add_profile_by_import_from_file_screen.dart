@@ -14,6 +14,7 @@ import 'package:karing/screens/group_helper.dart';
 import 'package:karing/screens/group_item_creator.dart';
 import 'package:karing/screens/group_item_options.dart';
 import 'package:karing/screens/theme_config.dart';
+import 'package:karing/screens/theme_define.dart';
 import 'package:karing/screens/widgets/framework.dart';
 import 'package:karing/screens/widgets/text_field.dart';
 import 'package:path/path.dart' as path;
@@ -120,116 +121,130 @@ class _AddProfileByImportFromFileScreenState
     Size windowSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: const SizedBox(
-                      width: 50,
-                      height: 30,
-                      child: Icon(Icons.arrow_back_ios_outlined, size: 26),
-                    ),
-                  ),
-                  SizedBox(
-                    width: windowSize.width - 50 * 2,
-                    child: Text(
-                      widget.title.isNotEmpty
-                          ? widget.title
-                          : tcontext.meta.addProfile,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: ThemeConfig.kFontWeightTitle,
-                        fontSize: ThemeConfig.kFontSizeTitle,
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: ThemeDefine.kHomeGradient,
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: const SizedBox(
+                        width: 50,
+                        height: 30,
+                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
                       ),
                     ),
-                  ),
-                  _loading
-                      ? const Row(
-                          children: [
-                            SizedBox(width: 12),
-                            SizedBox(
-                              width: 26,
-                              height: 26,
-                              child: RepaintBoundary(
-                                child: CircularProgressIndicator(),
+                    SizedBox(
+                      width: windowSize.width - 50 * 2,
+                      child: Text(
+                        widget.title.isNotEmpty
+                            ? widget.title
+                            : tcontext.meta.addProfile,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: ThemeConfig.kFontWeightTitle,
+                          fontSize: ThemeConfig.kFontSizeTitle,
+                        ),
+                      ),
+                    ),
+                    _loading
+                        ? const Row(
+                            children: [
+                              SizedBox(width: 12),
+                              SizedBox(
+                                width: 26,
+                                height: 26,
+                                child: RepaintBoundary(
+                                  child: CircularProgressIndicator(),
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 12),
-                          ],
-                        )
-                      : InkWell(
-                          onTap: () async {
-                            await onAdd(context);
-                          },
-                          child: Tooltip(
-                            message: tcontext.meta.save,
-                            child: const SizedBox(
-                              width: 50,
-                              height: 30,
-                              child: Icon(Icons.done, size: 26),
+                              SizedBox(width: 12),
+                            ],
+                          )
+                        : InkWell(
+                            onTap: () async {
+                              await onAdd(context);
+                            },
+                            child: Tooltip(
+                              message: tcontext.meta.save,
+                              child: const SizedBox(
+                                width: 50,
+                                height: 30,
+                                child: Icon(Icons.done, size: 26),
+                              ),
                             ),
                           ),
-                        ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: Column(
-                  children: [
-                    FutureBuilder(
-                      future: getGroupOptions(),
-                      builder:
-                          (
-                            BuildContext context,
-                            AsyncSnapshot<List<GroupItem>> snapshot,
-                          ) {
-                            List<GroupItem> data = snapshot.hasData
-                                ? snapshot.data!
-                                : [];
-                            return Column(
-                              children: GroupItemCreator.createGroups(
-                                context,
-                                data,
-                              ),
-                            );
-                          },
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(18, 20, 18, 20),
-                      child: SizedBox(
-                        height: 45.0,
-                        child: ElevatedButton(
-                          child: Text(tcontext.meta.fileChoose),
-                          onPressed: () async {
-                            await onPressChooseFile();
-                          },
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(18, 20, 18, 20),
-                      child: TextFieldEx(
-                        controller: _textControllerRemark,
-                        textInputAction: TextInputAction.done,
-                        decoration: InputDecoration(
-                          labelText: tcontext.meta.remark,
-                          hintText: tcontext.meta.required,
-                          prefixIcon: const Icon(Icons.edit_note_outlined),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 10),
+                Expanded(
+                  child: Column(
+                    children: [
+                      FutureBuilder(
+                        future: getGroupOptions(),
+                        builder:
+                            (
+                              BuildContext context,
+                              AsyncSnapshot<List<GroupItem>> snapshot,
+                            ) {
+                              List<GroupItem> data = snapshot.hasData
+                                  ? snapshot.data!
+                                  : [];
+                              return Column(
+                                children: GroupItemCreator.createGroups(
+                                  context,
+                                  data,
+                                ),
+                              );
+                            },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(18, 20, 18, 20),
+                        child: SizedBox(
+                          height: 45.0,
+                          child: ElevatedButton(
+                            child: Text(tcontext.meta.fileChoose),
+                            onPressed: () async {
+                              await onPressChooseFile();
+                            },
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(18, 20, 18, 20),
+                        child: TextFieldEx(
+                          controller: _textControllerRemark,
+                          textInputAction: TextInputAction.done,
+                          decoration: InputDecoration(
+                            labelText: tcontext.meta.remark,
+                            hintText: tcontext.meta.required,
+                            prefixIcon: const Icon(Icons.edit_note_outlined),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -1086,43 +1086,46 @@ class _ServerSelectScreenState extends LasyRenderingState<ServerSelectScreen> {
     Size windowSize = MediaQuery.of(context).size;
     return Column(
       children: [
-        const SizedBox(height: 20),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const SizedBox(width: 10),
-            Row(
-              children: [
-                const SizedBox(width: 5),
-                SizedBox(
-                  width: windowSize.width * 0.7,
-                  height: 40,
-                  child: Text(
-                    remark,
-                    style: const TextStyle(
-                      fontSize: ThemeConfig.kFontSizeListItem,
-                      fontWeight: ThemeConfig.kFontWeightListItem,
-                    ),
+        const SizedBox(height: 16),
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: ThemeDefine.kColorSurface.withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: ThemeDefine.kColorOutline.withValues(alpha: 0.1),
+            ),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  remark,
+                  style: const TextStyle(
+                    fontSize: ThemeConfig.kFontSizeListItem,
+                    fontWeight: FontWeight.w600,
+                    color: ThemeDefine.kColorOnSurface,
                   ),
                 ),
-                const Spacer(),
-                if (onIconTap != null) ...[
-                  InkWell(
-                    onTap: () async {
-                      onIconTap();
-                    },
-                    child: Tooltip(
-                      message: iconTips ?? "",
-                      child: Icon(icon, size: 26, color: iconColor),
-                    ),
+              ),
+              if (onIconTap != null) ...[
+                InkWell(
+                  onTap: () async {
+                    onIconTap();
+                  },
+                  child: Tooltip(
+                    message: iconTips ?? "",
+                    child: Icon(icon, size: 24,
+                        color: iconColor ?? ThemeDefine.kColorOnSurfaceVariant),
                   ),
-                ],
-                const SizedBox(width: 15),
+                ),
               ],
-            ),
-          ],
+              const SizedBox(width: 8),
+            ],
+          ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
       ],
     );
   }
@@ -1245,12 +1248,30 @@ class _ServerSelectScreenState extends LasyRenderingState<ServerSelectScreen> {
                   onLongPressServer(server, isTesting, isWaitTesting);
                 },
           child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             padding: const EdgeInsets.symmetric(horizontal: padding),
-            color: singleSelectCurrent
-                ? ThemeDefine.kColorBlue
-                : disabled
-                ? Colors.grey
-                : null,
+            decoration: BoxDecoration(
+              color: singleSelectCurrent
+                  ? ThemeDefine.kColorPrimary.withValues(alpha: 0.15)
+                  : ThemeDefine.kColorSurface.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: singleSelectCurrent
+                    ? ThemeDefine.kColorPrimary.withValues(alpha: 0.5)
+                    : ThemeDefine.kColorOutline.withValues(alpha: 0.15),
+                width: singleSelectCurrent ? 1.5 : 1,
+              ),
+              boxShadow: singleSelectCurrent
+                  ? [
+                      BoxShadow(
+                        color: ThemeDefine.kColorPrimary.withValues(alpha: 0.3),
+                        blurRadius: 12,
+                        spreadRadius: 0,
+                        offset: const Offset(0, 2),
+                      ),
+                    ]
+                  : null,
+            ),
             width: double.infinity,
             height: ThemeConfig.kListItemHeight,
             child: Row(
@@ -1446,25 +1467,37 @@ class _ServerSelectScreenState extends LasyRenderingState<ServerSelectScreen> {
       padding: const EdgeInsets.only(left: 0, right: 0),
       height: 44,
       width: double.infinity,
-      decoration: const BoxDecoration(borderRadius: ThemeDefine.kBorderRadius),
+      decoration: BoxDecoration(
+        color: ThemeDefine.kColorSurface.withValues(alpha: 0.5),
+        borderRadius: ThemeDefine.kBorderRadius,
+        border: Border.all(
+            color: ThemeDefine.kColorOutline.withValues(alpha: 0.2)),
+      ),
       child: TextFieldEx(
         controller: _searchController,
         textInputAction: TextInputAction.done,
         onChanged: _loadSearch,
         decoration: InputDecoration(
+          filled: false,
           border: InputBorder.none,
           focusedBorder: InputBorder.none,
-          prefixIcon: Icon(Icons.search_outlined),
+          enabledBorder: InputBorder.none,
+          prefixIcon: Icon(Icons.search_rounded,
+              color: ThemeDefine.kColorOnSurfaceVariant),
           hintText: tcontext.meta.search,
+          hintStyle: TextStyle(
+              color: ThemeDefine.kColorOnSurfaceVariant.withValues(alpha: 0.6)),
           suffixIcon: _searchController.text.isNotEmpty
               ? IconButton(
-                  icon: const Icon(Icons.clear_outlined),
+                  icon: Icon(Icons.clear_rounded,
+                      color: ThemeDefine.kColorOnSurfaceVariant),
                   onPressed: _clearSearch,
                 )
               : Tooltip(
                   message: tcontext.meta.candidateWord,
                   child: IconButton(
-                    icon: const Icon(Icons.arrow_forward_ios_outlined),
+                    icon: Icon(Icons.manage_search_rounded,
+                        color: ThemeDefine.kColorOnSurfaceVariant),
                     onPressed: _pushSearchSelect,
                   ),
                 ),
@@ -1479,20 +1512,44 @@ class _ServerSelectScreenState extends LasyRenderingState<ServerSelectScreen> {
     }
 
     Size windowSize = MediaQuery.of(context).size;
-    return Material(
-      color: server.isSame(widget.singleSelect!.selectedServer)
-          ? ThemeDefine.kColorBlue
-          : null,
-      borderRadius: ThemeDefine.kBorderRadius,
-      child: InkWell(
-        onTap: () {
-          Navigator.pop(context, server);
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          width: double.infinity,
-          height: ThemeConfig.kListItemHeight,
-          child: Row(
+    bool isSelected = server.isSame(widget.singleSelect!.selectedServer);
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: isSelected
+            ? ThemeDefine.kColorPrimary.withValues(alpha: 0.15)
+            : ThemeDefine.kColorSurface.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isSelected
+              ? ThemeDefine.kColorPrimary.withValues(alpha: 0.5)
+              : ThemeDefine.kColorOutline.withValues(alpha: 0.15),
+          width: isSelected ? 1.5 : 1,
+        ),
+        boxShadow: isSelected
+            ? [
+                BoxShadow(
+                  color: ThemeDefine.kColorPrimary.withValues(alpha: 0.3),
+                  blurRadius: 12,
+                  spreadRadius: 0,
+                  offset: const Offset(0, 2),
+                ),
+              ]
+            : null,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: ThemeDefine.kBorderRadius,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () {
+            Navigator.pop(context, server);
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            width: double.infinity,
+            height: ThemeConfig.kListItemHeight,
+            child: Row(
             children: [
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -1542,120 +1599,151 @@ class _ServerSelectScreenState extends LasyRenderingState<ServerSelectScreen> {
   @override
   Widget build(BuildContext context) {
     final tcontext = Translations.of(context);
-    Size windowSize = MediaQuery.of(context).size;
+    String title = widget.title != null && widget.title!.isNotEmpty
+        ? widget.title!
+        : tcontext.ServerSelectScreen.title;
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        if (widget.singleSelect != null) {
-                          Navigator.pop(
-                            context,
-                            widget.singleSelect!.selectedServer,
-                          );
-                        } else if (widget.multiSelect != null) {
-                          Navigator.pop(context);
-                        } else {
-                          Navigator.pop(context);
-                        }
-                      },
-                      child: const SizedBox(
-                        width: 50,
-                        height: 30,
-                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        onTapExpandAllGroup();
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            _expandGroup.isNotEmpty
-                                ? Icons.keyboard_double_arrow_up_outlined
-                                : Icons.keyboard_double_arrow_down_outlined,
-                            size: 26,
-                          ),
-                          SizedBox(
-                            width: windowSize.width - 50 * 3 - 26,
-                            child: Text(
-                              widget.title != null && widget.title!.isNotEmpty
-                                  ? widget.title!
-                                  : tcontext.ServerSelectScreen.title,
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontWeight: ThemeConfig.kFontWeightTitle,
-                                fontSize: ThemeConfig.kFontSizeTitle,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        widget.multiSelect != null
-                            ? InkWell(
-                                onTap: () => Navigator.pop(
-                                  context,
-                                  Tuple2(
-                                    widget.multiSelect!.searchKeywords,
-                                    widget.multiSelect!.selectedServers,
-                                  ),
-                                ),
-                                child: const SizedBox(
-                                  width: 50,
-                                  height: 30,
-                                  child: Icon(Icons.done_outlined, size: 26),
-                                ),
-                              )
-                            : Tooltip(
-                                message: tcontext.meta.latencyTest,
-                                child: InkWell(
-                                  onTap: () async {
-                                    onTapTestOutboundLatencyAll();
-                                  },
-                                  child: const SizedBox(
-                                    width: 50,
-                                    height: 30,
-                                    child: Icon(Icons.bolt_outlined, size: 30),
-                                  ),
-                                ),
-                              ),
-                        Tooltip(
-                          message: tcontext.meta.setting,
-                          child: InkWell(
-                            onTap: () async {
-                              onTapSetting();
-                            },
-                            child: const SizedBox(
-                              width: 50,
-                              height: 30,
-                              child: Icon(Icons.settings_outlined, size: 30),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+      backgroundColor: ThemeDefine.kColorBgPrimary,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          leading: InkWell(
+            onTap: () {
+              if (widget.singleSelect != null) {
+                Navigator.pop(context, widget.singleSelect!.selectedServer);
+              } else if (widget.multiSelect != null) {
+                Navigator.pop(context);
+              } else {
+                Navigator.pop(context);
+              }
+            },
+            child: const SizedBox(
+              width: 50,
+              height: 30,
+              child: Icon(Icons.arrow_back, size: 24,
+                  color: ThemeDefine.kColorOnSurface),
+            ),
+          ),
+          title: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: ThemeDefine.kColorOnSurface,
+            ),
+          ),
+          actions: [
+            if (widget.multiSelect != null)
+              IconButton(
+                icon: const Icon(Icons.done_rounded,
+                    color: ThemeDefine.kColorOnSurface),
+                onTap: () => Navigator.pop(
+                  context,
+                  Tuple2(widget.multiSelect!.searchKeywords,
+                      widget.multiSelect!.selectedServers),
+                ),
+              )
+            else
+              Tooltip(
+                message: tcontext.meta.latencyTest,
+                child: InkWell(
+                  onTap: () => onTapTestOutboundLatencyAll(),
+                  child: const SizedBox(
+                    width: 50,
+                    height: 40,
+                    child: Icon(Icons.bolt_rounded, size: 26,
+                        color: ThemeDefine.kColorOnSurface),
+                  ),
                 ),
               ),
-              const SizedBox(height: 10),
-              Expanded(child: ListViewMultiPartsBuilder.build(_listViewParts)),
-            ],
+            Tooltip(
+              message: tcontext.meta.collapse,
+              child: InkWell(
+                onTap: onTapExpandAllGroup,
+                child: const SizedBox(
+                  width: 50,
+                  height: 40,
+                  child: Icon(Icons.unfold_less_rounded, size: 26,
+                      color: ThemeDefine.kColorOnSurface),
+                ),
+              ),
+            ),
+            Tooltip(
+              message: tcontext.meta.setting,
+              child: InkWell(
+                onTap: onTapSetting,
+                child: const SizedBox(
+                  width: 50,
+                  height: 40,
+                  child: Icon(Icons.tune_rounded, size: 26,
+                      color: ThemeDefine.kColorOnSurface),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+          ],
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(gradient: ThemeDefine.kHomeGradient),
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                const SizedBox(height: 8),
+                _buildSearchField(tcontext),
+                const SizedBox(height: 12),
+                Expanded(child: ListViewMultiPartsBuilder.build(_listViewParts)),
+              ],
+            ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchField(Translations tcontext) {
+    return Container(
+      height: 44,
+      decoration: BoxDecoration(
+        color: ThemeDefine.kColorSurface.withValues(alpha: 0.5),
+        borderRadius: ThemeDefine.kBorderRadius,
+        border: Border.all(
+            color: ThemeDefine.kColorOutline.withValues(alpha: 0.2)),
+      ),
+      child: TextFieldEx(
+        controller: _searchController,
+        textInputAction: TextInputAction.done,
+        onChanged: _loadSearch,
+        decoration: InputDecoration(
+          filled: false,
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          prefixIcon: Icon(Icons.search_rounded,
+              color: ThemeDefine.kColorOnSurfaceVariant),
+          hintText: tcontext.meta.search,
+          hintStyle:
+              TextStyle(color: ThemeDefine.kColorOnSurfaceVariant.withValues(alpha: 0.6)),
+          suffixIcon: _searchController.text.isNotEmpty
+              ? IconButton(
+                  icon: Icon(Icons.clear_rounded,
+                      color: ThemeDefine.kColorOnSurfaceVariant),
+                  onPressed: _clearSearch,
+                )
+              : Tooltip(
+                  message: tcontext.meta.candidateWord,
+                  child: IconButton(
+                    icon: Icon(Icons.manage_search_rounded,
+                        color: ThemeDefine.kColorOnSurfaceVariant),
+                    onPressed: _pushSearchSelect,
+                  ),
+                ),
         ),
       ),
     );

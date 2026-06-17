@@ -7,6 +7,7 @@ import 'package:karing/i18n/strings.g.dart';
 import 'package:karing/screens/group_item_creator.dart';
 import 'package:karing/screens/group_item_options.dart';
 import 'package:karing/screens/theme_config.dart';
+import 'package:karing/screens/theme_define.dart';
 import 'package:karing/screens/widgets/framework.dart';
 
 class NoviceScreen extends LasyRenderingStatefulWidget {
@@ -43,8 +44,12 @@ class _NoviceScreenState extends LasyRenderingState<NoviceScreen> {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-        body: Focus(
+        backgroundColor: Colors.transparent,
+        extendBodyBehindAppBar: true,
+        appBar: PreferredSize(preferredSize: Size.zero, child: AppBar(backgroundColor: Colors.transparent, elevation: 0)),
+        body: Container(
+          decoration: const BoxDecoration(gradient: ThemeDefine.kHomeGradient),
+          child: Focus(
           onKeyEvent: onKeyEvent,
           canRequestFocus: false,
           skipTraversal: true,
@@ -71,6 +76,7 @@ class _NoviceScreenState extends LasyRenderingState<NoviceScreen> {
                                   style: const TextStyle(
                                     fontWeight: ThemeConfig.kFontWeightTitle,
                                     fontSize: ThemeConfig.kFontSizeTitle,
+                                    color: ThemeDefine.kColorOnSurface,
                                   ),
                                 ),
                               ),
@@ -91,6 +97,7 @@ class _NoviceScreenState extends LasyRenderingState<NoviceScreen> {
                                       fontWeight:
                                           ThemeConfig.kFontWeightListItem,
                                       fontSize: ThemeConfig.kFontSizeListItem,
+                                      color: ThemeDefine.kColorOnSurface,
                                     ),
                                   ),
                                 ),
@@ -127,6 +134,7 @@ class _NoviceScreenState extends LasyRenderingState<NoviceScreen> {
                 ],
               ),
             ),
+          ),
           ),
         ),
       ),

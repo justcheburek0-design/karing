@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:karing/screens/theme_define.dart';
 
 Future<T?> showSheet<T>({
   required BuildContext context,
@@ -59,8 +60,14 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
       forceMaterialTransparency: true,
       automaticallyImplyLeading: false,
       centerTitle: true,
-      backgroundColor: backgroundColor,
-      title: Text(widget.title),
+      backgroundColor: Colors.transparent,
+      title: Text(
+        widget.title,
+        style: TextStyle(
+          color: ThemeDefine.kColorPrimary,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
       actions: widget.actions,
     );
 
@@ -70,6 +77,10 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.vertical(top: Radius.circular(28.0)),
         color: backgroundColor,
+        border: Border.all(
+          color: ThemeDefine.kColorPrimary.withOpacity(0.15),
+          width: 1,
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -82,7 +93,7 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
               width: handleSize.width,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(handleSize.height / 2),
-                color: theme.colorScheme.onSurfaceVariant,
+                color: ThemeDefine.kColorPrimary.withOpacity(0.5),
               ),
             ),
           ),
@@ -111,7 +122,11 @@ Future<void> showSheetWidgets({
               return widgets[index];
             },
             separatorBuilder: (BuildContext context, int index) {
-              return const Divider(height: 1, thickness: 0.3);
+              return Divider(
+                height: 1,
+                thickness: 0.3,
+                color: ThemeDefine.kColorPrimary.withOpacity(0.15),
+              );
             },
             itemCount: widgets.length,
           ),

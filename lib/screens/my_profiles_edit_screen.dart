@@ -9,6 +9,7 @@ import 'package:karing/screens/group_helper.dart';
 import 'package:karing/screens/group_item_creator.dart';
 import 'package:karing/screens/group_item_options.dart';
 import 'package:karing/screens/theme_config.dart';
+import 'package:karing/screens/theme_define.dart';
 import 'package:karing/screens/widgets/framework.dart';
 import 'package:karing/screens/widgets/text_field.dart';
 import 'package:tuple/tuple.dart';
@@ -79,104 +80,118 @@ class _MyProfilesEditScreenState
     Size windowSize = MediaQuery.of(context).size;
     ServerConfigGroupItem? item = ServerManager.getByGroupId(widget.groupid);
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: const SizedBox(
-                      width: 50,
-                      height: 30,
-                      child: Icon(Icons.arrow_back_ios_outlined, size: 26),
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: ThemeDefine.kHomeGradient,
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: const SizedBox(
+                        width: 50,
+                        height: 30,
+                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    width: windowSize.width - 50 * 2,
-                    child: Text(
-                      tcontext.meta.profileEdit,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: ThemeConfig.kFontWeightTitle,
-                        fontSize: ThemeConfig.kFontSizeTitle,
+                    SizedBox(
+                      width: windowSize.width - 50 * 2,
+                      child: Text(
+                        tcontext.meta.profileEdit,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: ThemeConfig.kFontWeightTitle,
+                          fontSize: ThemeConfig.kFontSizeTitle,
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        onTapSave();
+                      },
+                      child: const SizedBox(
+                        width: 50,
+                        height: 30,
+                        child: Icon(Icons.done_outlined, size: 26),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(18, 10, 18, 10),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 10),
+                          if (item != null && item.isRemote()) ...[
+                            TextFieldEx(
+                              textInputAction: TextInputAction.next,
+                              maxLines: 5,
+                              controller: _textControllerLink,
+                              decoration: InputDecoration(
+                                labelText: tcontext.meta.url,
+                                hintText: tcontext.meta.url,
+                              ),
+                              onSubmitted: (String? text) {
+                                FocusScope.of(context).nextFocus();
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                          ],
+                          TextFieldEx(
+                            textInputAction: TextInputAction.done,
+                            controller: _textControllerRemark,
+                            decoration: InputDecoration(
+                              labelText: tcontext.meta.remark,
+                              hintText: tcontext.meta.remark,
+                              prefixIcon: const Icon(Icons.edit_note_outlined),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          FutureBuilder(
+                            future: getGroupOptions(),
+                            builder:
+                                (
+                                  BuildContext context,
+                                  AsyncSnapshot<List<GroupItem>> snapshot,
+                                ) {
+                                  List<GroupItem> data = snapshot.hasData
+                                      ? snapshot.data!
+                                      : [];
+                                  return Column(
+                                    children: GroupItemCreator.createGroups(
+                                      context,
+                                      data,
+                                    ),
+                                  );
+                                },
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  InkWell(
-                    onTap: () {
-                      onTapSave();
-                    },
-                    child: const SizedBox(
-                      width: 50,
-                      height: 30,
-                      child: Icon(Icons.done_outlined, size: 26),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(18, 10, 18, 10),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 10),
-                        if (item != null && item.isRemote()) ...[
-                          TextFieldEx(
-                            textInputAction: TextInputAction.next,
-                            maxLines: 5,
-                            controller: _textControllerLink,
-                            decoration: InputDecoration(
-                              labelText: tcontext.meta.url,
-                              hintText: tcontext.meta.url,
-                            ),
-                            onSubmitted: (String? text) {
-                              FocusScope.of(context).nextFocus();
-                            },
-                          ),
-                          const SizedBox(height: 20),
-                        ],
-                        TextFieldEx(
-                          textInputAction: TextInputAction.done,
-                          controller: _textControllerRemark,
-                          decoration: InputDecoration(
-                            labelText: tcontext.meta.remark,
-                            hintText: tcontext.meta.remark,
-                            prefixIcon: const Icon(Icons.edit_note_outlined),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        FutureBuilder(
-                          future: getGroupOptions(),
-                          builder:
-                              (
-                                BuildContext context,
-                                AsyncSnapshot<List<GroupItem>> snapshot,
-                              ) {
-                                List<GroupItem> data = snapshot.hasData
-                                    ? snapshot.data!
-                                    : [];
-                                return Column(
-                                  children: GroupItemCreator.createGroups(
-                                    context,
-                                    data,
-                                  ),
-                                );
-                              },
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -891,89 +891,103 @@ class MyProfilesScreenState extends LasyRenderingState<MyProfilesScreen> {
     final tcontext = Translations.of(context);
     Size windowSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: const SizedBox(
-                        width: 50,
-                        height: 30,
-                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: ThemeDefine.kHomeGradient,
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: const SizedBox(
+                          width: 50,
+                          height: 30,
+                          child: Icon(Icons.arrow_back_ios_outlined, size: 26),
+                        ),
                       ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        onTapExpandAllGroup();
-                      },
-                      child: Row(
+                      InkWell(
+                        onTap: () {
+                          onTapExpandAllGroup();
+                        },
+                        child: Row(
+                          children: [
+                            Icon(
+                              _expandGroup.isNotEmpty
+                                  ? Icons.keyboard_double_arrow_up_outlined
+                                  : Icons.keyboard_double_arrow_down_outlined,
+                              size: 26,
+                            ),
+                            SizedBox(
+                              width: windowSize.width - 50 * 3 - 26,
+                              child: Text(
+                                tcontext.meta.myProfiles,
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontWeight: ThemeConfig.kFontWeightTitle,
+                                  fontSize: ThemeConfig.kFontSizeTitle,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Icon(
-                            _expandGroup.isNotEmpty
-                                ? Icons.keyboard_double_arrow_up_outlined
-                                : Icons.keyboard_double_arrow_down_outlined,
-                            size: 26,
+                          Tooltip(
+                            message: tcontext.meta.latencyTest,
+                            child: InkWell(
+                              onTap: () async {
+                                onTapTestOutboundLatencyAll();
+                              },
+                              child: const SizedBox(
+                                width: 50,
+                                height: 30,
+                                child: Icon(Icons.bolt_outlined, size: 30),
+                              ),
+                            ),
                           ),
-                          SizedBox(
-                            width: windowSize.width - 50 * 3 - 26,
-                            child: Text(
-                              tcontext.meta.myProfiles,
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontWeight: ThemeConfig.kFontWeightTitle,
-                                fontSize: ThemeConfig.kFontSizeTitle,
+                          Tooltip(
+                            message: tcontext.meta.more,
+                            child: InkWell(
+                              onTap: () async {
+                                onTapMore();
+                              },
+                              child: const SizedBox(
+                                width: 50,
+                                height: 30,
+                                child: Icon(Icons.more_vert_outlined, size: 30),
                               ),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Tooltip(
-                          message: tcontext.meta.latencyTest,
-                          child: InkWell(
-                            onTap: () async {
-                              onTapTestOutboundLatencyAll();
-                            },
-                            child: const SizedBox(
-                              width: 50,
-                              height: 30,
-                              child: Icon(Icons.bolt_outlined, size: 30),
-                            ),
-                          ),
-                        ),
-                        Tooltip(
-                          message: tcontext.meta.more,
-                          child: InkWell(
-                            onTap: () async {
-                              onTapMore();
-                            },
-                            child: const SizedBox(
-                              width: 50,
-                              height: 30,
-                              child: Icon(Icons.more_vert_outlined, size: 30),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Expanded(child: ListViewMultiPartsBuilder.build(_listViewParts)),
-            ],
+                const SizedBox(height: 10),
+                Expanded(child: ListViewMultiPartsBuilder.build(_listViewParts)),
+              ],
+            ),
           ),
         ),
       ),

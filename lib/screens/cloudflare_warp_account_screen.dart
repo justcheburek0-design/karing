@@ -16,6 +16,7 @@ import 'package:karing/screens/group_item_creator.dart';
 import 'package:karing/screens/group_item_options.dart';
 import 'package:karing/screens/theme_config.dart';
 import 'package:karing/screens/widgets/framework.dart';
+import 'package:karing/screens/theme_define.dart';
 
 class CloudflareWarpAccountScreen extends LasyRenderingStatefulWidget {
   static RouteSettings routSettings() {
@@ -63,133 +64,100 @@ class _CloudflareWarpAccountScreenState
     var settingConfig = SettingManager.getConfig();
 
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: const SizedBox(
-                        width: 50,
-                        height: 30,
-                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
-                      ),
-                    ),
-                    SizedBox(
-                      width: windowSize.width - 50 * 2,
-                      child: const Text(
-                        "Account",
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontWeight: ThemeConfig.kFontWeightTitle,
-                          fontSize: ThemeConfig.kFontSizeTitle,
+      backgroundColor: ThemeDefine.kColorBgPrimary,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: InkWell(
+            onTap: () => Navigator.pop(context),
+            child: const Icon(Icons.arrow_back_ios_outlined, size: 24),
+          ),
+          title: const Text(
+            "Account",
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontWeight: ThemeConfig.kFontWeightTitle,
+              fontSize: ThemeConfig.kFontSizeTitle,
+              color: ThemeDefine.kColorOnSurface,
+            ),
+          ),
+          centerTitle: true,
+          actions: [
+            _loading
+                ? const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    child: SizedBox(
+                      width: 26,
+                      height: 26,
+                      child: RepaintBoundary(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: ThemeDefine.kColorPrimary,
                         ),
                       ),
                     ),
-                    Row(
-                      children: [
-                        _loading
-                            ? const Row(
-                                children: [
-                                  SizedBox(width: 12),
-                                  SizedBox(
-                                    width: 26,
-                                    height: 26,
-                                    child: RepaintBoundary(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  ),
-                                  SizedBox(width: 12),
-                                ],
-                              )
-                            : InkWell(
-                                onTap: () async {
-                                  /* var result =
-                                      await CloudflareWarpUtils.genFreeWarpConfig();
-                                  if (result.data != null) {
-                                    String content =
-                                        const JsonEncoder.withIndent(null)
-                                            .convert(result.data);
-                                    print(content);
-                                  }*/
+                  )
+                : IconButton(
+                    onPressed: () async {
+                      if (settingConfig.warp.account.license.isNotEmpty) {
+                        settingConfig.warp.account = WarpAccount();
+                        SettingManager.save();
+                        if (!mounted) return;
+                        setState(() {});
+                        return;
+                      }
+                      if (_loading) return;
+                      _loading = true;
+                      setState(() {});
 
-                                  if (settingConfig
-                                      .warp
-                                      .account
-                                      .license
-                                      .isNotEmpty) {
-                                    settingConfig.warp.account = WarpAccount();
-                                    SettingManager.save();
-                                    if (!mounted) {
-                                      return;
-                                    }
-                                    setState(() {});
-                                    return;
-                                  }
-                                  if (_loading) {
-                                    return;
-                                  }
-                                  _loading = true;
-                                  setState(() {});
+                      ReturnResult<WarpAccount> account =
+                          await CloudflareWarpUtils.gen25PBWarpAccount();
 
-                                  ReturnResult<WarpAccount> account =
-                                      await CloudflareWarpUtils.gen25PBWarpAccount();
-
-                                  if (account.error != null) {
-                                    if (!context.mounted) {
-                                      return;
-                                    }
-                                    DialogUtils.showAlertDialog(
-                                      context,
-                                      account.error!.message,
-                                      showCopy: true,
-                                      showFAQ: true,
-                                      withVersion: true,
-                                    );
-                                  } else {
-                                    settingConfig.warp.account = account.data!;
-                                    SettingManager.save();
-                                  }
-                                  _loading = false;
-                                  if (!mounted) {
-                                    return;
-                                  }
-                                  setState(() {});
-                                },
-                                child: SizedBox(
-                                  width: 50,
-                                  height: 30,
-                                  child:
-                                      settingConfig
-                                          .warp
-                                          .account
-                                          .license
-                                          .isNotEmpty
-                                      ? const Icon(
-                                          Icons.clear_outlined,
-                                          size: 26,
-                                          color: Colors.red,
-                                        )
-                                      : const Icon(
-                                          Icons.cloud_download_outlined,
-                                          size: 26,
-                                        ),
-                                ),
-                              ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
+                      if (account.error != null) {
+                        if (!context.mounted) return;
+                        DialogUtils.showAlertDialog(
+                          context,
+                          account.error!.message,
+                          showCopy: true,
+                          showFAQ: true,
+                          withVersion: true,
+                        );
+                      } else {
+                        settingConfig.warp.account = account.data!;
+                        SettingManager.save();
+                      }
+                      _loading = false;
+                      if (!mounted) return;
+                      setState(() {});
+                    },
+                    icon: settingConfig.warp.account.license.isNotEmpty
+                        ? const Icon(Icons.clear_outlined,
+                            size: 24, color: Colors.red)
+                        : const Icon(Icons.cloud_download_outlined, size: 24),
+                    color: ThemeDefine.kColorOnSurface,
+                  ),
+          ],
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              ThemeDefine.kColorBgPrimary,
+              ThemeDefine.kColorBgSecondary,
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+            child: Column(
+              children: [
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(

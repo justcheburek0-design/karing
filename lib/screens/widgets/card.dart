@@ -18,17 +18,94 @@ class InfoHeader extends StatelessWidget {
   final Info info;
   final List<Widget> actions;
   final EdgeInsetsGeometry? padding;
+  final bool glassStyle;
 
   const InfoHeader({
     super.key,
     required this.info,
     this.padding,
     List<Widget>? actions,
+    this.glassStyle = false,
   }) : actions = actions ?? const [];
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    if (glassStyle) {
+      return Padding(
+        padding: padding ?? kGlassCardEdgeInsets.copyWith(bottom: 0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              flex: 1,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  if (info.iconData != null) ...[
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: colorScheme.primary.withOpacity(kGlassIconCircleOpacity),
+                      ),
+                      child: Icon(
+                        info.iconData,
+                        size: 18,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                  ],
+                  Flexible(
+                    flex: 1,
+                    child: Tooltip(
+                      message: info.label,
+                      child: Text(
+                        info.label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (info.tips.isNotEmpty) ...[
+                    const SizedBox(width: 8),
+                    Tooltip(
+                      message: info.tips,
+                      child: InkWell(
+                        onTap: () {
+                          DialogUtils.showAlertDialog(context, info.tips);
+                        },
+                        child: Icon(
+                          Icons.info_outline,
+                          color: colorScheme.onSurface.withOpacity(0.5),
+                          size: 18,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [...actions],
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Original plain style
     return Padding(
       padding: padding ?? baseInfoEdgeInsets,
       child: Row(
@@ -121,13 +198,19 @@ class CommonCard extends StatelessWidget {
   final FocusNode? focusNode;
   final int alpha;
 
-  // final WidgetStateProperty<Color?>? backgroundColor;
-  // final WidgetStateProperty<BorderSide?>? borderSide;
-
   BorderSide getBorderSide(BuildContext context, Set<WidgetState> states) {
     final colorScheme = Theme.of(context).colorScheme;
     if (type == CommonCardType.filled) {
       return BorderSide.none;
+    }
+    if (type == CommonCardType.glass) {
+      final isHovered = states.contains(WidgetState.hovered) ||
+          states.contains(WidgetState.focused) ||
+          states.contains(WidgetState.pressed);
+      return BorderSide(
+        color: Colors.white.withOpacity(isHovered ? 0.15 : kGlassCardBorderOpacity),
+        width: kGlassCardBorderWidth,
+      );
     }
     final hoverColor = isSelected
         ? colorScheme.primary.opacity80
@@ -152,6 +235,13 @@ class CommonCard extends StatelessWidget {
       }
       return colorScheme.surfaceContainer;
     }
+    if (type == CommonCardType.glass) {
+      final isHovered = states.contains(WidgetState.hovered) ||
+          states.contains(WidgetState.focused) ||
+          states.contains(WidgetState.pressed);
+      final opacity = isHovered ? kGlassCardHoverOpacity : kGlassCardOpacity;
+      return kGlassCardBaseColor.withOpacity(opacity);
+    }
     if (isSelected) {
       return colorScheme.secondaryContainer;
     }
@@ -171,8 +261,11 @@ class CommonCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           InfoHeader(
-            padding: baseInfoEdgeInsets.copyWith(bottom: 0),
+            padding: type == CommonCardType.glass
+                ? kGlassCardEdgeInsets.copyWith(bottom: 0)
+                : baseInfoEdgeInsets.copyWith(bottom: 0),
             info: info!,
+            glassStyle: type == CommonCardType.glass,
           ),
           Flexible(flex: 1, child: child),
         ],
@@ -186,14 +279,18 @@ class CommonCard extends StatelessWidget {
       childWidget = Stack(children: children);
     }
 
+    final effectiveRadius = type == CommonCardType.glass ? kGlassCardRadius : radius;
+
     final card = OutlinedButton(
       focusNode: focusNode,
       onLongPress: onLongPress,
       clipBehavior: Clip.antiAlias,
       style: ButtonStyle(
-        padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+        padding: type == CommonCardType.glass
+            ? WidgetStatePropertyAll(kGlassCardEdgeInsets)
+            : const WidgetStatePropertyAll(EdgeInsets.zero),
         shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(effectiveRadius)),
         ),
         iconColor: WidgetStatePropertyAll(theme.colorScheme.primary),
         iconSize: WidgetStateProperty.all(20),
@@ -241,11 +338,17 @@ class SettingsBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Column(
         children: [
-          InfoHeader(info: Info(label: title)),
-          Card(child: Column(children: settings)),
+          InfoHeader(
+            info: Info(label: title),
+            glassStyle: true,
+          ),
+          CommonCard(
+            type: CommonCardType.glass,
+            child: Column(children: settings),
+          ),
         ],
       ),
     );

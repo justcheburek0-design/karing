@@ -164,7 +164,7 @@ class GroupItemSwitch extends StatelessWidget {
             width: 8,
             height: 8,
             decoration: const BoxDecoration(
-              color: Colors.red,
+              color: ThemeDefine.kColorPrimary,
               shape: BoxShape.circle,
             ),
           ),
@@ -183,7 +183,7 @@ class GroupItemSwitch extends StatelessWidget {
           width: 60,
           child: Switch.adaptive(
             value: options.switchValue ?? false,
-            activeThumbColor: Colors.white,
+            activeThumbColor: ThemeDefine.kColorOnSurface,
             activeTrackColor: ThemeDefine.kColorGreenBright,
             onChanged: options.onSwitch == null
                 ? null
@@ -234,7 +234,7 @@ class GroupItemPush extends StatelessWidget {
               width: 8,
               height: 8,
               decoration: BoxDecoration(
-                color: options.reddotColor ?? Colors.red,
+                color: options.reddotColor ?? ThemeDefine.kColorPrimary,
                 shape: BoxShape.circle,
               ),
             ),
@@ -322,7 +322,7 @@ class GroupItemTimerIntervalPicker extends StatelessWidget {
               width: 8,
               height: 8,
               decoration: const BoxDecoration(
-                color: Colors.red,
+                color: ThemeDefine.kColorPrimary,
                 shape: BoxShape.circle,
               ),
             ),
@@ -462,7 +462,7 @@ class GroupItemDateTimeDurationPicker extends StatelessWidget {
               width: 8,
               height: 8,
               decoration: const BoxDecoration(
-                color: Colors.red,
+                color: ThemeDefine.kColorPrimary,
                 shape: BoxShape.circle,
               ),
             ),
@@ -540,11 +540,11 @@ extension DateTimePickerTypeExtension on DateTimePickerType {
   Color get color {
     switch (this) {
       case DateTimePickerType.date:
-        return Colors.blue;
+        return ThemeDefine.kColorPrimary;
       case DateTimePickerType.datetime:
-        return Colors.orange;
+        return ThemeDefine.kColorPrimary;
       case DateTimePickerType.time:
-        return Colors.pink;
+        return ThemeDefine.kColorPrimary;
     }
   }
 

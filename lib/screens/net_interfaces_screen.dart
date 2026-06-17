@@ -39,11 +39,18 @@ class _NetInterfacesScreenState
     Size windowSize = MediaQuery.of(context).size;
     final setting = SettingManager.getConfig();
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.zero, child: AppBar()),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: Column(
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(backgroundColor: Colors.transparent, elevation: 0),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(gradient: ThemeDefine.kHomeGradient),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Column(
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
@@ -55,7 +62,7 @@ class _NetInterfacesScreenState
                       child: const SizedBox(
                         width: 50,
                         height: 30,
-                        child: Icon(Icons.arrow_back_ios_outlined, size: 26),
+                        child: Icon(Icons.arrow_back_ios_outlined, size: 26, color: ThemeDefine.kColorOnSurface),
                       ),
                     ),
                     SizedBox(
@@ -67,6 +74,7 @@ class _NetInterfacesScreenState
                         style: const TextStyle(
                           fontWeight: ThemeConfig.kFontWeightTitle,
                           fontSize: ThemeConfig.kFontSizeTitle,
+                          color: ThemeDefine.kColorOnSurface,
                         ),
                       ),
                     ),
@@ -99,6 +107,7 @@ class _NetInterfacesScreenState
           ),
         ),
       ),
+      ),
     );
   }
 
@@ -113,7 +122,7 @@ class _NetInterfacesScreenState
           return createWidget(current, index, windowSize);
         },
         separatorBuilder: (BuildContext context, int index) {
-          return const Divider(height: 1, thickness: 0.3);
+          return Divider(height: 1, thickness: 0.3, color: ThemeDefine.kColorOnSurface.withOpacity(0.08));
         },
       ),
     );
@@ -124,6 +133,7 @@ class _NetInterfacesScreenState
     const double leftWidth = 30;
     double rightWidth = windowSize.width - leftWidth - padding * 2;
     return Material(
+      color: Colors.transparent,
       borderRadius: ThemeDefine.kBorderRadius,
       child: InkWell(
         onTap: () {},
@@ -139,7 +149,7 @@ class _NetInterfacesScreenState
                     width: leftWidth,
                     child: Text(
                       (index + 1).toString(),
-                      style: const TextStyle(fontSize: 12),
+                      style: TextStyle(fontSize: 12, color: ThemeDefine.kColorOnSurfaceVariant),
                     ),
                   ),
                   SizedBox(
@@ -154,6 +164,7 @@ class _NetInterfacesScreenState
                               current.name,
                               style: TextStyle(
                                 fontSize: ThemeConfig.kFontSizeGroupItem,
+                                color: ThemeDefine.kColorOnSurface,
                               ),
                             ),
                           ],
@@ -164,6 +175,7 @@ class _NetInterfacesScreenState
                               current.address,
                               style: TextStyle(
                                 fontSize: ThemeConfig.kFontSizeGroupItem,
+                                color: ThemeDefine.kColorOnSurfaceVariant,
                               ),
                             ),
                           ],
