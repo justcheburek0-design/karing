@@ -149,10 +149,10 @@ dependencies:
       ref: bf21977eaa4e6035b1d81e249f91525a74f86ffd
       path: packages/window_manager
   vpn_service:
-    path: ../vpn-service/
-    #git:
-      #url: https://github.com/KaringX/vpn-service.git
-      #ref: main
+    #path: ../vpn-service/
+    git:
+      url: https://github.com/KaringX/vpn-service.git
+      ref: main
 
 dev_dependencies:
   source_gen: 4.2.3
